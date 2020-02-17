@@ -16,6 +16,7 @@ struct Line {
     Vector d;
 };
 
+
 class Solid {
 public:
     explicit Solid(Point const& pos, TexMat& tex) : pos_(pos), tex_(tex) {}
@@ -43,6 +44,13 @@ public:
 
 protected:
     float r_;
+};
+
+struct Intersection {
+    Intersection(float d_, Solid *s_) : d(d_), s(s_) {}
+
+    float d;
+    Solid* s;
 };
 
 #endif //RAYTRACER_OBJECTS_H

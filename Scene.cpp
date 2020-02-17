@@ -25,8 +25,17 @@ void Scene::add_light(Light *l) {
     lights_.push_back(l);
 }
 
-Color getpix(unsigned col, unsigned row) {
-
+Intersection Scene::cast_ray(const Line& ray) {
+    float min_dist = INFINITY;
+    float min_idx = -1;
+    for (auto k = 0u; k < solids_.size(); ++k) {
+        float dist = solids_[k]->intersects(ray);
+        if (dist >= 0 && dist < min_dist) {
+            min_dist = dist;
+            min_idx = k;
+        }
+    }
+    return Intersection{min_dist, solids_[min_idx]};
 }
 
 Image Scene::render(unsigned int width, unsigned int height) {
@@ -34,31 +43,21 @@ Image Scene::render(unsigned int width, unsigned int height) {
 
     for (auto i = 0u; i < height; ++i) {
         for (auto j = 0u; j < width; ++j) {
-            Point p = tl_ + ((float) i / height) * Vector::down() + ((float) j / width) * Vector::right();
-            Vector d = (p - pos_).normalized();
-            Line ray(p, d);
+            Point z_target = tl_ + ((float) i / height) * Vector::down() + ((float) j / width) * Vector::right();
+            Vector ray_dir = (z_target - pos_).normalized();
+            Intersection its = cast_ray({z_target, ray_dir});
 
-            float min = INFINITY;
-            float minidx = -1;
-            for (auto k = 0u; k < solids_.size(); ++k) {
-                float dt = solids_[k]->intersects(ray);
-                if (dt >= 0 && dt < min) {
-                    min = dt;
-                    minidx = k;
-                }
-            }
             Color c;
-            if (minidx >= 0) {
-                Solid* s = solids_[minidx];
-                Point surf = p + d * min;
-                Line norm = s->get_normal(surf);
-                TexPixel tp = s->get_tex(surf);
+            if (its.d < INFINITY) {
+                Point contact = z_target + ray_dir * its.d;
+                Line norm = its.s->get_normal(contact);
+                TexPixel tp = its.s->get_tex(contact);
                 for (auto l : lights_) {
-                    Vector ldir = (l->pos() - surf).normalized();
-                    float lum = tp.kd * (norm.d * ldir);
-                    c.r = (float)tp.ka.r * lum;
-                    c.g = (float)tp.ka.g * lum;
-                    c.b = (float)tp.ka.b * lum;
+                    Vector l_dir = (l->pos() - contact).normalized();
+                    float lum = tp.kd * (norm.d * l_dir);
+                    c.r = (float) tp.ka.r * lum;
+                    c.g = (float) tp.ka.g * lum;
+                    c.b = (float) tp.ka.b * lum;
                 }
             }
             img.set_pix(i, j, c);
@@ -66,3 +65,4 @@ Image Scene::render(unsigned int width, unsigned int height) {
     }
     return img;
 }
+

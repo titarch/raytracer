@@ -16,6 +16,7 @@ public:
     Scene(Camera& cam);
     void add_solid(Solid *s);
     void add_light(Light *l);
+    Intersection cast_ray(Line const& ray);
     Image render(unsigned width, unsigned height);
 protected:
     std::vector<Solid*> solids_;
