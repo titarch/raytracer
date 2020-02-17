@@ -53,10 +53,9 @@ Image Scene::render(unsigned int width, unsigned int height) {
                 Point surf = p + d * min;
                 Line norm = s->get_normal(surf);
                 TexPixel tp = s->get_tex(surf);
-                for (auto k = 0u; k < lights_.size(); ++k) {
-                    Light *l = lights_[k];
+                for (auto l : lights_) {
                     Vector ldir = (l->pos() - surf).normalized();
-                    float lum = -tp.kd * (norm.d * ldir);
+                    float lum = tp.kd * (norm.d * ldir);
                     c.r = (float)tp.ka.r * lum;
                     c.g = (float)tp.ka.g * lum;
                     c.b = (float)tp.ka.b * lum;
