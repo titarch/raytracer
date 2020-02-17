@@ -35,6 +35,8 @@ Intersection Scene::cast_ray(const Line& ray) {
             min_idx = k;
         }
     }
+    if (min_idx == -1)
+        return Intersection{-1, nullptr};
     return Intersection{min_dist, solids_[min_idx]};
 }
 
@@ -48,13 +50,15 @@ Image Scene::render(unsigned int width, unsigned int height) {
             Intersection its = cast_ray({z_target, ray_dir});
 
             Color c;
-            if (its.d < INFINITY) {
+            if (its.s != nullptr) {
                 Point contact = z_target + ray_dir * its.d;
                 Line norm = its.s->get_normal(contact);
                 TexPixel tp = its.s->get_tex(contact);
                 for (auto l : lights_) {
                     Vector l_dir = (l->pos() - contact).normalized();
                     float lum = tp.kd * (norm.d * l_dir);
+                    if (lum < 0)
+                        lum = 0;
                     c.r = (float) tp.ka.r * lum;
                     c.g = (float) tp.ka.g * lum;
                     c.b = (float) tp.ka.b * lum;
