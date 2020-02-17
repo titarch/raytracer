@@ -51,7 +51,7 @@ Color Scene::get_light_value(Intersection const& its, Line const& ray) {
         Intersection lits = cast_ray({p, l_dir});
         if (lits.s != nullptr && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
             continue;
-        Vector local_lum = tp.kd * tp.ka.to_vect() * (norm.d * l_dir) + tp.ks * Vector::one() * (-reflection * l_dir) % tp.ns;
+        Vector local_lum = tp.kd * tp.ka.to_vect() * (norm.d * l_dir) + tp.ks * Vector::one() * std::pow((-reflection * l_dir), tp.ns);
         lum += local_lum;
     }
     return Color::from_vect(lum);
