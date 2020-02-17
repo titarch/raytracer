@@ -6,11 +6,11 @@
 int main() {
     Camera cam(Point::back() * 7, Point::zero(), 1, 1, 1);
     Scene scene(cam);
-    UniTex tex(Color(255, 0, 200), 0.7, 0.3, 1);
+    UniTex tex(Color(255, 0, 200), 0.7, 0.8, 5);
     Sphere sph(Point::forward(), tex,  1);
-    UniTex tex2(Color(0, 255, 200), 0.7, 0.3, 1);
+    UniTex tex2(Color(0, 255, 200), 0.7, 0.8, 5);
     Sphere sph2(Point::left() + Point::back() * 2, tex2,  0.7);
-    UniTex tex3(Color(255, 200, 20), 0.5, 0.5, 1);
+    UniTex tex3(Color(255, 200, 20), 0.5, 0.8, 5);
     Sphere sph3(Point::left() * 2.5 + Point:: back() * 1.5, tex3, 0.3);
     scene.add_solid(&sph);
     scene.add_solid(&sph2);

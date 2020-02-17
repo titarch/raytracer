@@ -69,6 +69,13 @@ public:
         return *this;
     }
 
+    Vector& operator%=(float k) {
+        x_ = std::pow(x_, k);
+        y_ = std::pow(y_, k);
+        z_ = std::pow(z_, k);
+        return *this;
+    }
+
     friend inline float operator*(Vector const& lhs, Vector const& rhs) {
         return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_ + lhs.z_ * rhs.z_;
     }
@@ -155,5 +162,9 @@ inline Vector operator%(Vector lhs, Vector const& rhs) {
     return lhs;
 }
 
+inline Vector operator%(Vector lhs, float rhs) {
+    lhs %= rhs;
+    return lhs;
+}
 
 #endif //RAYTRACER_VECTOR_H
