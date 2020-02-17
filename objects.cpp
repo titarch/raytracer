@@ -13,7 +13,7 @@ float Sphere::intersects(const Line& line) const {
     if (delta < 0)
         return -1;
     float dist = (-b + std::sqrt(delta)) / (2*a);
-    if (dist < 1e-4)
+    if (dist < 1e-3)
         return -1;
     return dist;
 }

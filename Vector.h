@@ -62,6 +62,13 @@ public:
         return *this;
     }
 
+    Vector& operator%=(Vector const& rhs) {
+        x_ *= rhs.x_;
+        y_ *= rhs.y_;
+        z_ *= rhs.z_;
+        return *this;
+    }
+
     friend inline float operator*(Vector const& lhs, Vector const& rhs) {
         return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_ + lhs.z_ * rhs.z_;
     }
@@ -140,6 +147,11 @@ inline Vector operator*(float lhs, Vector rhs) {
 
 inline Vector operator/(Vector lhs, float rhs) {
     lhs /= rhs;
+    return lhs;
+}
+
+inline Vector operator%(Vector lhs, Vector const& rhs) {
+    lhs %= rhs;
     return lhs;
 }
 

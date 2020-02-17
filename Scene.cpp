@@ -40,21 +40,21 @@ Intersection Scene::cast_ray(const Line& ray) {
     return Intersection{min_dist, solids_[min_idx]};
 }
 
-float Scene::get_light_value(Point const& p, TexPixel const& tp, Intersection const& its) {
+Color Scene::get_light_value(Intersection const& its, Line const& ray) {
+    Point p = ray.o + ray.d * its.d;
+    TexPixel tp = its.s->get_tex(p);
     Line norm = its.s->get_normal(p);
-    float lum = 0;
+    Vector reflection = ray.d - 2 * (ray.d * norm.d) * norm.d;
+    Vector lum;
     for (auto l : lights_) {
         Vector l_dir = (l->pos() - p).normalized();
         Intersection lits = cast_ray({p, l_dir});
-        if (lits.s != nullptr  && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
+        if (lits.s != nullptr && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
             continue;
-
-        float local_lum = tp.kd * (norm.d * l_dir);
-        if (local_lum < 0)
-            continue;
+        Vector local_lum = tp.kd * tp.ka.to_vect() * (norm.d * l_dir) + tp.ks * Vector::one() * (-reflection * l_dir);
         lum += local_lum;
     }
-    return lum;
+    return Color::from_vect(lum);
 }
 
 Image Scene::render(unsigned int width, unsigned int height) {
@@ -64,18 +64,12 @@ Image Scene::render(unsigned int width, unsigned int height) {
         for (auto j = 0u; j < width; ++j) {
             Point z_target = tl_ + ((float) i / height) * Vector::down() + ((float) j / width) * Vector::right();
             Vector ray_dir = (z_target - pos_).normalized();
-            Intersection its = cast_ray({z_target, ray_dir});
+            Line ray = {z_target, ray_dir};
+            Intersection its = cast_ray(ray);
 
             Color c;
-            if (its.s != nullptr) {
-                Point contact = z_target + ray_dir * its.d;
-                TexPixel tp = its.s->get_tex(contact);
-                float lum = get_light_value(contact, tp, its);
-
-                c.r = (float) tp.ka.r * lum;
-                c.g = (float) tp.ka.g * lum;
-                c.b = (float) tp.ka.b * lum;
-            }
+            if (its.s != nullptr)
+                c = get_light_value(its, ray);
             img.set_pix(i, j, c);
         }
     }
