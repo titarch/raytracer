@@ -12,7 +12,10 @@ float Sphere::intersects(const Line& line) const {
     float delta = b * b - 4 * a * c;
     if (delta < 0)
         return -1;
-    return (-b + std::sqrt(delta)) / (2*a);
+    float dist = (-b + std::sqrt(delta)) / (2*a);
+    if (dist < 1e-4)
+        return -1;
+    return dist;
 }
 
 Line Sphere::get_normal(Point const& p) const {

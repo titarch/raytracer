@@ -17,6 +17,7 @@ public:
     void add_solid(Solid *s);
     void add_light(Light *l);
     Intersection cast_ray(Line const& ray);
+    float get_light_value(const Point& p, const TexPixel& tp, const Intersection& its);
     Image render(unsigned width, unsigned height);
 protected:
     std::vector<Solid*> solids_;

@@ -40,6 +40,23 @@ Intersection Scene::cast_ray(const Line& ray) {
     return Intersection{min_dist, solids_[min_idx]};
 }
 
+float Scene::get_light_value(Point const& p, TexPixel const& tp, Intersection const& its) {
+    Line norm = its.s->get_normal(p);
+    float lum = 0;
+    for (auto l : lights_) {
+        Vector l_dir = (l->pos() - p).normalized();
+        Intersection lits = cast_ray({p, l_dir});
+        if (lits.s != nullptr  && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
+            continue;
+
+        float local_lum = tp.kd * (norm.d * l_dir);
+        if (local_lum < 0)
+            continue;
+        lum += local_lum;
+    }
+    return lum;
+}
+
 Image Scene::render(unsigned int width, unsigned int height) {
     Image img = Image(width, height);
 
@@ -52,17 +69,12 @@ Image Scene::render(unsigned int width, unsigned int height) {
             Color c;
             if (its.s != nullptr) {
                 Point contact = z_target + ray_dir * its.d;
-                Line norm = its.s->get_normal(contact);
                 TexPixel tp = its.s->get_tex(contact);
-                for (auto l : lights_) {
-                    Vector l_dir = (l->pos() - contact).normalized();
-                    float lum = tp.kd * (norm.d * l_dir);
-                    if (lum < 0)
-                        lum = 0;
-                    c.r = (float) tp.ka.r * lum;
-                    c.g = (float) tp.ka.g * lum;
-                    c.b = (float) tp.ka.b * lum;
-                }
+                float lum = get_light_value(contact, tp, its);
+
+                c.r = (float) tp.ka.r * lum;
+                c.g = (float) tp.ka.g * lum;
+                c.b = (float) tp.ka.b * lum;
             }
             img.set_pix(i, j, c);
         }
