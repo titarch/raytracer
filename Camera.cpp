@@ -9,11 +9,11 @@ Camera::Camera(const Point& pos, const Point& target, float x, float y, float zm
                                                                                       zmin_(zmin) {}
 
 float Camera::width() {
-    return zmin_ * tanf(x_);
+    return 2 * zmin_ * tanf(x_ / 2);
 }
 
 float Camera::height() {
-    return zmin_ * tanf(y_);
+    return 2 *  zmin_ * tanf(y_ / 2);
 }
 
 const Point& Camera::getPos() const {
