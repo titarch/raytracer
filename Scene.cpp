@@ -62,7 +62,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
 
     for (auto i = 0u; i < height; ++i) {
         for (auto j = 0u; j < width; ++j) {
-            Point z_target = tl_ + ((float) i / height) * Vector::down() + ((float) j / width) * Vector::right();
+            Point z_target = tl_ + ((float) i * h_ / height) * Vector::down() + ((float) j * w_ / width) * Vector::right();
             Vector ray_dir = (z_target - pos_).normalized();
             Line ray = {z_target, ray_dir};
             Intersection its = cast_ray(ray);
