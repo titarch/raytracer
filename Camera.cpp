@@ -27,3 +27,21 @@ const Point& Camera::getTarget() const {
 float Camera::getZmin() const {
     return zmin_;
 }
+
+void Camera::setPos(const Point& pos) {
+    pos_ = pos;
+}
+
+void Camera::setTarget(const Point& target) {
+    target_ = target;
+}
+
+void Camera::move(const Vector& d) {
+    pos_ += d;
+    target_ += d;
+}
+
+void Camera::rotate(float phi, float theta, float psi) {
+    target_ += Vector::right() * phi + Vector::up() * theta;
+    target_ = (target_ - pos_).normalized() + pos_;
+}

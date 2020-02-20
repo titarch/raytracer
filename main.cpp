@@ -4,7 +4,7 @@
 #include "Scene.h"
 
 int main() {
-    Camera cam(Point::back() * 7, Point::zero(), 1, 1, 1);
+    Camera cam(Point::back() * 7, Point::zero(), 1, 1, 0.1);
     Scene scene(cam);
     UniTex tex(Color(255, 0, 200), 0.7, 0.8, 5);
     Sphere sph(Point::forward(), tex,  1);
@@ -19,7 +19,9 @@ int main() {
     scene.add_light(&light);
 //    PointLight light2(Vector::back() * 2 + Vector::right() * 10 + Vector::up() *  2);
 //    scene.add_light(&light2);
-    Image img = scene.render(1000, 1000);
-    img.save_ppm("test.ppm");
+//    Image img = scene.render(1000, 1000);
+//    img.save_ppm("test.ppm");
+
+    scene.render_rt(512, 512);
     return 0;
 }

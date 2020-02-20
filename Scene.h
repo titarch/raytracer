@@ -14,18 +14,21 @@
 class Scene {
 public:
     Scene(Camera& cam);
+    void update_view();
     void add_solid(Solid *s);
     void add_light(Light *l);
     Intersection cast_ray(Line const& ray);
     Color get_light_value(Intersection const& its, Line const& ray);
     Image render(unsigned width, unsigned height);
+    void render_rt(unsigned int width, unsigned int height);
 protected:
     std::vector<Solid*> solids_;
     std::vector<Light*> lights_;
     Camera& cam_;
     float w_;
     float h_;
-    Point center_, tl_, br_, pos_;
+    Point center_, tl_, br_;
+
 };
 
 

@@ -14,11 +14,20 @@ public:
     float width();
     float height();
 
-    const Point& getPos() const;
+    [[nodiscard]] const Point& getPos() const;
 
-    const Point& getTarget() const;
+    [[nodiscard]] const Point& getTarget() const;
 
-    float getZmin() const;
+    [[nodiscard]] float getZmin() const;
+
+    void setPos(const Point& pos);
+
+    void setTarget(const Point& target);
+
+    void move(Vector const& d);
+
+    void rotate(float phi, float theta, float psi);
+
 
 private:
     Point pos_;
