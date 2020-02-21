@@ -11,6 +11,8 @@
 #include "Camera.h"
 #include "Image.h"
 
+#define REFLECTION_REC_LVL_MAX 10
+
 class Scene {
 public:
     Scene(Camera& cam);
@@ -18,7 +20,7 @@ public:
     void add_solid(Solid *s);
     void add_light(Light *l);
     Intersection cast_ray(Line const& ray);
-    Color get_light_value(Intersection const& its, Line const& ray);
+    Vector get_light_value(Intersection const& its, Line const& ray, int rec_lvl = 0);
     Image render(unsigned width, unsigned height);
     void render_rt(unsigned int width, unsigned int height);
 protected:

@@ -43,7 +43,10 @@ Intersection Scene::cast_ray(const Line& ray) {
     return Intersection{min_dist, solids_[min_idx]};
 }
 
-Color Scene::get_light_value(Intersection const& its, Line const& ray) {
+Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_lvl) {
+    if (its.s == nullptr)
+        return Vector::zero();
+
     Point p = ray.o + ray.d * its.d;
     TexPixel tp = its.s->get_tex(p);
     Line norm = its.s->get_normal(p);
@@ -58,7 +61,13 @@ Color Scene::get_light_value(Intersection const& its, Line const& ray) {
                            tp.ks * Vector::one() * std::pow(std::clamp(reflection * l_dir, 0.f, INFINITY), tp.ns);
         lum += local_lum;
     }
-    return Color::from_vect(lum);
+
+    if (rec_lvl >= REFLECTION_REC_LVL_MAX)
+        return lum;
+
+    Line reflection_ray(p, reflection);
+    Intersection rits = cast_ray(reflection_ray);
+    return lum + tp.kd * get_light_value(rits, reflection_ray, rec_lvl + 1);
 }
 
 Image Scene::render(unsigned int width, unsigned int height) {
@@ -72,9 +81,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
             Line ray = {z_target, ray_dir};
             Intersection its = cast_ray(ray);
 
-            Color c;
-            if (its.s != nullptr)
-                c = get_light_value(its, ray);
+            Color c = Color::from_vect(get_light_value(its, ray));
             img.set_pix(i, j, c);
         }
     }
@@ -108,6 +115,12 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
                     case sf::Keyboard::D :
                         cam_.move(cam_.right());
                         break;
+                    case sf::Keyboard::LShift:
+                        cam_.move(cam_.up());
+                        break;
+                    case sf::Keyboard::LControl:
+                        cam_.move(cam_.down());
+                        break;
                     case sf::Keyboard::I :
                         cam_.rotate(0, -.1, 0);
                         break;
@@ -140,7 +153,7 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
 
                 Color c;
                 if (its.s != nullptr)
-                    c = get_light_value(its, ray);
+                    c = Color::from_vect(get_light_value(its, ray));
                 *px++ = c.r;
                 *px++ = c.g;
                 *px++ = c.b;

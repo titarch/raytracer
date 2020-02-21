@@ -4,11 +4,11 @@
 #include "Scene.h"
 
 int main() {
-    Camera cam(Point::back() * 7, Vector::forward(), Vector::up(), 1, 1, 0.1);
+    Camera cam(Point::back() * 7, Vector::forward(), Vector::up(), M_PI / 2, 1.05840687, 0.05);
     Scene scene(cam);
-    UniTex tex(Color(255, 0, 200), 0.7, 0.8, 5);
+    UniTex tex(Color(255, 0, 200), 0.5, 0.5, 5);
     Sphere sph(Point::forward(), tex,  1);
-    UniTex tex2(Color(0, 255, 200), 0.7, 0.8, 5);
+    UniTex tex2(Color(0, 255, 200), 0.5, 0.5, 4);
     Sphere sph2(Point::left() + Point::back() * 2, tex2,  0.7);
     UniTex tex3(Color(255, 200, 20), 0.5, 0.5, 3);
     Sphere sph3(Point::left() * 2.2 + Point:: back() * 2.3 + Point::up() * 0.2, tex3, 0.3);
@@ -22,6 +22,6 @@ int main() {
 //    Image img = scene.render(1000, 1000);
 //    img.save_ppm("test.ppm");
 
-    scene.render_rt(512, 512);
+    scene.render_rt(1920, 1080);
     return 0;
 }
