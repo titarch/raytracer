@@ -48,13 +48,13 @@ Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_
         return Vector::zero();
 
     Point p = ray.o + ray.d * its.d;
-    TexPixel tp = its.s->get_tex(p);
-    Line norm = its.s->get_normal(p);
+    TexPixel const& tp = its.s->get_tex(p);
+    Line const& norm = its.s->get_normal(p);
     Vector reflection = ray.d - 2 * (ray.d * norm.d) * norm.d;
     Vector lum = tp.ka.to_vect() * 0.02;
     for (auto l : lights_) {
         Vector l_dir = (l->pos() - p).normalized();
-        Intersection lits = cast_ray({p, l_dir});
+        Intersection const& lits = cast_ray({p, l_dir});
         if (lits.s != nullptr && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
             continue;
         Vector local_lum = tp.kd * tp.ka.to_vect() * std::clamp(norm.d * l_dir, 0.f, INFINITY) +
@@ -66,7 +66,7 @@ Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_
         return lum;
 
     Line reflection_ray(p, reflection);
-    Intersection rits = cast_ray(reflection_ray);
+    Intersection const& rits = cast_ray(reflection_ray);
     return lum + tp.kd * get_light_value(rits, reflection_ray, rec_lvl + 1);
 }
 
@@ -149,11 +149,9 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
                         tl_ + ((float) i * h_ / height) * cam_.down() + ((float) j * w_ / width) * cam_.right();
                 Vector ray_dir = (z_target - cam_.getPos()).normalized();
                 Line ray = {z_target, ray_dir};
-                Intersection its = cast_ray(ray);
+                Intersection const& its = cast_ray(ray);
 
-                Color c;
-                if (its.s != nullptr)
-                    c = Color::from_vect(get_light_value(its, ray));
+                Color const& c = Color::from_vect(get_light_value(its, ray));
                 *px++ = c.r;
                 *px++ = c.g;
                 *px++ = c.b;
