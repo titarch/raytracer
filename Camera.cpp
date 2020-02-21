@@ -4,6 +4,8 @@
 
 #include "Camera.h"
 
+#include <cmath>
+
 Camera::Camera(const Point& pos, const Vector& forward, const Vector& up,
                float x, float y, float zmin) : pos_(pos), forward_(forward), up_(up), x_(x), y_(y), zmin_(zmin) {}
 
@@ -33,13 +35,21 @@ void Camera::move(const Vector& d) {
 
 void Camera::rotate(float theta, float phi, float psi) {
     (void) psi;
-    float x = forward_.x() * cosf(theta) + forward_.z() * sinf(theta);
-    float z = forward_.z() * cosf(theta) - forward_.x() * sinf(theta);
-    forward_ = Vector{x, forward_.y(), z}.normalized();
+    if (std::fabs(theta) > 0) {
+        float x = forward_.x() * cosf(theta) + forward_.z() * sinf(theta);
+        float z = forward_.z() * cosf(theta) - forward_.x() * sinf(theta);
+        forward_ = Vector{x, forward_.y(), z}.normalized();
+    }
 
-    float y = up_.y() * cosf(phi) - up_.z() * sinf(phi);
-    z = up_.y() * sinf(phi) + up_.z() * cosf(phi);
-    up_ = Vector{up_.x(), y, z}.normalized();
+    if (std::fabs(phi) > 0) {
+        float y = up_.y() * cosf(phi) - up_.z() * sinf(phi);
+        float z = up_.y() * sinf(phi) + up_.z() * cosf(phi);
+        up_ = Vector{up_.x(), y, z}.normalized();
+
+        y = -up_.z();
+        z = up_.y();
+        forward_ = Vector{forward_.x(), y, z}.normalized();
+    }
 }
 
 Vector Camera::left() const {

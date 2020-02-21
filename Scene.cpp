@@ -82,7 +82,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
 }
 
 void Scene::render_rt(unsigned int width, unsigned int height) {
-    sf::RenderWindow window(sf::VideoMode(width, height), "sfml");
+    sf::RenderWindow window(sf::VideoMode(width, height), "sfml-raytracer");
     auto *pixels = new sf::Uint8[width * height * 4];
     sf::Image img;
     sf::Texture stex;
@@ -109,13 +109,13 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
                         cam_.move(cam_.right());
                         break;
                     case sf::Keyboard::I :
-                        cam_.rotate(0, .1, 0);
+                        cam_.rotate(0, -.1, 0);
                         break;
                     case sf::Keyboard::J :
                         cam_.rotate(-.1, 0, 0);
                         break;
                     case sf::Keyboard::K :
-                        cam_.rotate(0, -.1, 0);
+                        cam_.rotate(0, .1, 0);
                         break;
                     case sf::Keyboard::L :
                         cam_.rotate(.1, 0, 0);
