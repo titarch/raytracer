@@ -11,11 +11,11 @@ int main() {
     UniTex tex2(Color(0, 255, 200), 0.7, 0.8, 5);
     Sphere sph2(Point::left() + Point::back() * 2, tex2,  0.7);
     UniTex tex3(Color(255, 200, 20), 0.5, 0.5, 3);
-    Sphere sph3(Point::left() * 2.5 + Point:: back() * 1.5, tex3, 0.3);
+    Sphere sph3(Point::left() * 2.2 + Point:: back() * 2.3 + Point::up() * 0.2, tex3, 0.3);
     scene.add_solid(&sph);
     scene.add_solid(&sph2);
     scene.add_solid(&sph3);
-    PointLight light(Vector::back() + Vector::left() * 10 + Vector::up() * 2);
+    PointLight light(Vector::back() * 2 + Vector::left() * 10 + Vector::up() * 2);
     scene.add_light(&light);
 //    PointLight light2(Vector::back() * 2 + Vector::right() * 10 + Vector::up() *  2);
 //    scene.add_light(&light2);

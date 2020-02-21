@@ -48,14 +48,14 @@ Color Scene::get_light_value(Intersection const& its, Line const& ray) {
     TexPixel tp = its.s->get_tex(p);
     Line norm = its.s->get_normal(p);
     Vector reflection = ray.d - 2 * (ray.d * norm.d) * norm.d;
-    Vector lum = tp.ka.to_vect() * 0.03;
+    Vector lum = tp.ka.to_vect() * 0.02;
     for (auto l : lights_) {
         Vector l_dir = (l->pos() - p).normalized();
         Intersection lits = cast_ray({p, l_dir});
         if (lits.s != nullptr && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
             continue;
-        Vector local_lum = tp.kd * tp.ka.to_vect() * (norm.d * l_dir) +
-                           tp.ks * Vector::one() * std::pow((reflection * l_dir), tp.ns);
+        Vector local_lum = tp.kd * tp.ka.to_vect() * std::clamp(norm.d * l_dir, 0.f, INFINITY) +
+                           tp.ks * Vector::one() * std::pow(std::clamp(reflection * l_dir, 0.f, INFINITY), tp.ns);
         lum += local_lum;
     }
     return Color::from_vect(lum);
