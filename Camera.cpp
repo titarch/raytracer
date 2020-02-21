@@ -32,9 +32,14 @@ void Camera::move(const Vector& d) {
 }
 
 void Camera::rotate(float theta, float phi, float psi) {
+    (void) psi;
     float x = forward_.x() * cosf(theta) + forward_.z() * sinf(theta);
     float z = forward_.z() * cosf(theta) - forward_.x() * sinf(theta);
     forward_ = Vector{x, forward_.y(), z}.normalized();
+
+    float y = up_.y() * cosf(phi) - up_.z() * sinf(phi);
+    z = up_.y() * sinf(phi) + up_.z() * cosf(phi);
+    up_ = Vector{up_.x(), y, z}.normalized();
 }
 
 Vector Camera::left() const {

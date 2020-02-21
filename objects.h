@@ -28,8 +28,8 @@ public:
     virtual TexPixel get_tex(Point const& p) const = 0;
 
 protected:
-    TexMat& tex_;
     Point pos_;
+    TexMat& tex_;
 };
 
 class Sphere : public Solid {

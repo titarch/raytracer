@@ -22,9 +22,9 @@ public:
     Image render(unsigned width, unsigned height);
     void render_rt(unsigned int width, unsigned int height);
 protected:
+    Camera& cam_;
     std::vector<Solid*> solids_;
     std::vector<Light*> lights_;
-    Camera& cam_;
     float w_;
     float h_;
     Point center_, tl_;

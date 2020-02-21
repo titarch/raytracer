@@ -5,6 +5,8 @@
 #include "Textures.h"
 
 TexPixel UniTex::get_tex(float x, float y) {
+    (void)x;
+    (void)y;
     return tp_;
 }
 
