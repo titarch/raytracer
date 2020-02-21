@@ -23,6 +23,6 @@ Line Sphere::get_normal(Point const& p) const {
 }
 
 TexPixel Sphere::get_tex(Point const& p) const {
-    return tex_.get_tex(0, 0);
+    return tex_.get_tex(p.x(), p.y());
 }
 

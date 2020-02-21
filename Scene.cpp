@@ -14,11 +14,10 @@ Scene::Scene(Camera& cam) : cam_(cam), solids_(), lights_() {
 void Scene::update_view() {
     float zmin = cam_.getZmin();
     const Point& pos = cam_.getPos();
-    const Point& tgt = cam_.getTarget();
+    const Vector& fw = cam_.forward();
 
-    center_ = pos + (tgt - pos).normalized() * zmin;
-    tl_ = center_ + (w_ / 2) * Vector::left() + (h_ / 2) * Vector::up();
-    br_ = center_ + (w_ / 2) * Vector::right() + (h_ / 2) * Vector::down();
+    center_ = pos + fw * zmin;
+    tl_ = center_ + (w_ / 2) * cam_.left() + (h_ / 2) * cam_.up();
 }
 
 void Scene::add_solid(Solid *s) {
@@ -68,7 +67,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
     for (auto i = 0u; i < height; ++i) {
         for (auto j = 0u; j < width; ++j) {
             Point z_target =
-                    tl_ + ((float) i * h_ / height) * Vector::down() + ((float) j * w_ / width) * Vector::right();
+                    tl_ + ((float) i * h_ / height) * cam_.down() + ((float) j * w_ / width) * cam_.right();
             Vector ray_dir = (z_target - cam_.getPos()).normalized();
             Line ray = {z_target, ray_dir};
             Intersection its = cast_ray(ray);
@@ -98,16 +97,16 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {
                     case sf::Keyboard::W :
-                        cam_.move(Vector::forward());
+                        cam_.move(cam_.forward());
                         break;
                     case sf::Keyboard::A :
-                        cam_.move(Vector::left());
+                        cam_.move(cam_.left());
                         break;
                     case sf::Keyboard::S :
-                        cam_.move(Vector::back());
+                        cam_.move(cam_.back());
                         break;
                     case sf::Keyboard::D :
-                        cam_.move(Vector::right());
+                        cam_.move(cam_.right());
                         break;
                     case sf::Keyboard::I :
                         cam_.rotate(0, .1, 0);
@@ -134,7 +133,7 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
         for (auto i = 0u; i < height; ++i) {
             for (auto j = 0u; j < width; ++j) {
                 Point z_target =
-                        tl_ + ((float) i * h_ / height) * Vector::down() + ((float) j * w_ / width) * Vector::right();
+                        tl_ + ((float) i * h_ / height) * cam_.down() + ((float) j * w_ / width) * cam_.right();
                 Vector ray_dir = (z_target - cam_.getPos()).normalized();
                 Line ray = {z_target, ray_dir};
                 Intersection its = cast_ray(ray);

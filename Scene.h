@@ -27,7 +27,7 @@ protected:
     Camera& cam_;
     float w_;
     float h_;
-    Point center_, tl_, br_;
+    Point center_, tl_;
 
 };
 

@@ -4,7 +4,7 @@
 #include "Scene.h"
 
 int main() {
-    Camera cam(Point::back() * 7, Point::zero(), 1, 1, 0.1);
+    Camera cam(Point::back() * 7, Vector::forward(), Vector::up(), 1, 1, 0.1);
     Scene scene(cam);
     UniTex tex(Color(255, 0, 200), 0.7, 0.8, 5);
     Sphere sph(Point::forward(), tex,  1);

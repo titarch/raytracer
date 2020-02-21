@@ -31,6 +31,7 @@ private:
     float kd_;
     float ks_;
     float ns_;
+    TexPixel tp_;
 };
 
 #endif //RAYTRACER_TEXTURES_H

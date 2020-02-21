@@ -34,11 +34,8 @@ public:
         return *this;
     }
 
-    Vector& operator-() {
-        x_ = -x_;
-        y_ = -y_;
-        z_ = -z_;
-        return *this;
+    Vector operator-() const {
+        return Vector(-x_, -y_, -z_);
     }
 
     Vector& operator-=(Vector const& rhs) {
@@ -73,6 +70,16 @@ public:
         x_ = std::pow(x_, k);
         y_ = std::pow(y_, k);
         z_ = std::pow(z_, k);
+        return *this;
+    }
+
+    Vector& operator^=(Vector const& rhs) {
+        float x = y_ * rhs.z_ - z_ * rhs.y_;
+        float y = z_ * rhs.x_ - x_ * rhs.z_;
+        float z = x_ * rhs.y_ - y_ * rhs.x_;
+        x_ = x;
+        y_ = y;
+        z_ = z;
         return *this;
     }
 
@@ -164,6 +171,11 @@ inline Vector operator%(Vector lhs, Vector const& rhs) {
 
 inline Vector operator%(Vector lhs, float rhs) {
     lhs %= rhs;
+    return lhs;
+}
+
+inline Vector operator^(Vector lhs, Vector const& rhs) {
+    lhs ^= rhs;
     return lhs;
 }
 
