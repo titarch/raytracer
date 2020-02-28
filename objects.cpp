@@ -12,8 +12,8 @@ float Sphere::intersects(const Line& line) const {
     float delta = b * b - 4 * a * c;
     if (delta < 0)
         return -1;
-    float dist = (-b - std::sqrt(delta)) / (2*a);
-    if (dist < 1e-3)
+    float dist = (-b - std::sqrt(delta)) / (2 * a);
+    if (dist < EPS)
         return -1;
     return dist;
 }
@@ -26,3 +26,20 @@ TexPixel Sphere::get_tex(Point const& p) const {
     return tex_.get_tex(p.x(), p.y());
 }
 
+float Plane::intersects(const Line& line) const {
+    float denom = norm_ * line.d;
+    if (std::fabs(denom) > EPS) {
+        float dist = ((pos_ - line.o) * norm_) / denom;
+        if (dist > EPS)
+            return dist;
+    }
+    return -1;
+}
+
+Line Plane::get_normal(const Point& p) const {
+    return {p , norm_};
+}
+
+TexPixel Plane::get_tex(const Point& p) const {
+    return tex_.get_tex(p.x(), p.y());
+}

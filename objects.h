@@ -9,6 +9,8 @@
 #include "Vector.h"
 #include "Textures.h"
 
+#define EPS 1e-3
+
 struct Line {
     Line(Point const& origin, Vector const& direction) : o(origin), d(direction) {}
 
@@ -46,11 +48,25 @@ protected:
     float r_;
 };
 
+class Plane : public Solid {
+public:
+    Plane(const Point& pos, TexMat& tex, const Vector& norm) : Solid(pos, tex), norm_(norm) {}
+
+    float intersects(Line const& line) const override;
+
+    Line get_normal(Point const& p) const override;
+
+    TexPixel get_tex(Point const& p) const override;
+
+protected:
+    Vector norm_;
+};
+
 struct Intersection {
     Intersection(float d_, Solid *s_) : d(d_), s(s_) {}
 
     float d;
-    Solid* s;
+    Solid *s;
 };
 
 #endif //RAYTRACER_OBJECTS_H
