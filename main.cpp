@@ -13,15 +13,18 @@ int main() {
     Sphere sph2(Point::left() + Point::back() * 2, tex2, 0.7);
     UniTex tex3(Color(255, 200, 20), 0.5, 0.5, 3);
     Sphere sph3(Point::left() * 2.2 + Point::back() * 2.3 + Point::up() * 0.2, tex3, 0.3);
-    scene.add_solid(&sph);
-    scene.add_solid(&sph2);
+//    scene.add_solid(&sph);
+//    scene.add_solid(&sph2);
     scene.add_solid(&sph3);
 
     UniTex tex4(Color(0, 32, 255), 1, 0.1, 1);
-    Plane plane(Point::down(), tex4, Vector::up());
+    Plane plane(Point::down() * 2, tex4, Vector::up());
     Plane plane2(Point::up() * 4, tex4, Vector::down());
     scene.add_solid(&plane);
 //    scene.add_solid(&plane2);
+
+    Triangle tri(tex, Vector::up(), Vector::left() + Vector::forward(), Vector());
+    scene.add_solid(&tri);
 
     PointLight light(Vector::back() * 2 + Vector::left() * 10 + Vector::up() * 2);
     scene.add_light(&light);
