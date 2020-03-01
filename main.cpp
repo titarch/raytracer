@@ -2,6 +2,7 @@
 #include "Vector.h"
 #include "Image.h"
 #include "Scene.h"
+#include "Blob.h"
 
 int main() {
     Camera cam(Point::back() * 7, Vector::forward(), Vector::up(), M_PI / 2, atanf(16.f / 9), 0.05);
@@ -20,11 +21,11 @@ int main() {
     UniTex tex4(Color(0, 32, 255), 1, 0.1, 1);
     Plane plane(Point::down() * 2, tex4, Vector::up());
     Plane plane2(Point::up() * 4, tex4, Vector::down());
-    scene.add_solid(&plane);
+//    scene.add_solid(&plane);
 //    scene.add_solid(&plane2);
 
-    Triangle tri(tex, Vector::up(), Vector::left() + Vector::forward(), Vector());
-    scene.add_solid(&tri);
+//    Triangle tri(tex, Vector::up(), Vector::left() + Vector::forward(), Vector());
+//    scene.add_solid(&tri);
 
     PointLight light(Vector::back() * 2 + Vector::left() * 10 + Vector::up() * 2);
     scene.add_light(&light);
@@ -33,6 +34,15 @@ int main() {
 //    Image img = scene.render(1000, 1000);
 //    img.save_ppm("test.ppm");
 
+    Blob blob({
+        ChargedPoint{Point{-1.5, 0, 3}, 1.01},
+        ChargedPoint{Point{1.5, 0, 3}, 1.02}
+        }, Blob::pf_square, {
+        Point{-3, -3, 0}, 6
+        }, 0.5, 0.5);
+    blob.render(scene, tex);
+
+//    scene.render(1920, 1080).save_now();
     scene.render_rt(1920, 1080);
     return 0;
 }
