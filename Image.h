@@ -23,6 +23,7 @@ public:
     }
 
     void save_ppm(std::string const& path);
+    void save_now();
     void test();
 
     void set_pix(unsigned int i, unsigned int i1, Color color);

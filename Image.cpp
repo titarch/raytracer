@@ -4,6 +4,16 @@
 
 #include <fstream>
 #include "Image.h"
+#include <iomanip>
+
+static std::string GetCurrentTimeForFileName() {
+    auto time = std::time(nullptr);
+    std::stringstream ss;
+    ss << std::put_time(std::localtime(&time), "%F_%T");
+    auto s = ss.str();
+    std::replace(s.begin(), s.end(), ':', '-');
+    return s;
+}
 
 void Image::save_ppm(const std::string& path) {
     auto file = std::fstream(path, std::ios::out | std::ios::binary);
@@ -29,4 +39,8 @@ void Image::test() {
 
 void Image::set_pix(unsigned int i, unsigned int j, Color color) {
     pixels_[i][j] = color;
+}
+
+void Image::save_now() {
+    save_ppm(GetCurrentTimeForFileName() + ".ppm");
 }
