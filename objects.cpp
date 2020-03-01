@@ -11,10 +11,10 @@ float Sphere::intersects(const Line& line) const {
     float c = oc.sqrMagnitude() - r_ * r_;
     float delta = b * b - 4 * a * c;
     if (delta < 0)
-        return -1;
+        return INFINITY;
     float dist = (-b - std::sqrt(delta)) / (2 * a);
     if (dist < EPS)
-        return -1;
+        return INFINITY;
     return dist;
 }
 
@@ -33,7 +33,7 @@ float Plane::intersects(const Line& line) const {
         if (dist > EPS)
             return dist;
     }
-    return -1;
+    return INFINITY;
 }
 
 Line Plane::get_normal(const Point& p) const {
@@ -47,17 +47,16 @@ TexPixel Plane::get_tex(const Point& p) const {
 float Triangle::intersects(const Line& line) const {
     auto h = line.d ^(-e2_);
     auto a = e0_ * h;
-    if (std::fabs(a) < EPS) return -1;
+    if (std::fabs(a) < EPS) return INFINITY;
     float f = 1.f / a;
     auto s = line.o - v0_;
     float u = f * (s * h);
-    if (u < 0.0 || u > 1.0)
-        return -1;
+    if (u < 0.0 || u > 1.0) return INFINITY;
     auto q = s ^e0_;
     float v = f * line.d * q;
-    if (v < 0.0 || u + v > 1.0) return -1;
+    if (v < 0.0 || u + v > 1.0) return INFINITY;
     float t = f * (-e2_ * q);
-    if (t < EPS) return -1;
+    if (t < EPS) return INFINITY;
 
     return t;
 }

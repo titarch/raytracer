@@ -5,7 +5,7 @@
 #include "Scene.h"
 #include <SFML/Graphics.hpp>
 
-Scene::Scene(Camera& cam) : cam_(cam), solids_(), lights_() {
+Scene::Scene(Camera &cam) : cam_(cam), solids_(), lights_() {
     w_ = cam.width();
     h_ = cam.height();
     update_view();
@@ -13,8 +13,8 @@ Scene::Scene(Camera& cam) : cam_(cam), solids_(), lights_() {
 
 void Scene::update_view() {
     float zmin = cam_.getZmin();
-    const Point& pos = cam_.getPos();
-    const Vector& fw = cam_.forward();
+    const Point &pos = cam_.getPos();
+    const Vector &fw = cam_.forward();
 
     center_ = pos + fw * zmin;
     tl_ = center_ + (w_ / 2) * cam_.left() + (h_ / 2) * cam_.up();
@@ -28,33 +28,42 @@ void Scene::add_light(Light *l) {
     lights_.push_back(l);
 }
 
-Intersection Scene::cast_ray(const Line& ray) {
-    float min_dist = INFINITY;
-    float min_idx = -1;
+struct Compare {
+    float val;
+    int index;
+};
+
+Intersection Scene::cast_ray(const Line &ray) {
+
+    float dists[solids_.size()];
+    #pragma omp simd
+    for (unsigned i = 0u; i < solids_.size(); ++i)
+        dists[i] = solids_[i]->intersects(ray);
+
+    Compare min{INFINITY, -1};
     for (auto k = 0u; k < solids_.size(); ++k) {
-        float dist = solids_[k]->intersects(ray);
-        if (dist >= 0 && dist < min_dist) {
-            min_dist = dist;
-            min_idx = k;
+        if (dists[k] < min.val) {
+            min.val = dists[k];
+            min.index = k;
         }
     }
-    if (min_idx == -1)
+    if (min.index == -1)
         return Intersection{-1, nullptr};
-    return Intersection{min_dist, solids_[min_idx]};
+    return Intersection{min.val, solids_[min.index]};
 }
 
-Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_lvl) {
+Vector Scene::get_light_value(Intersection const &its, Line const &ray, int rec_lvl) {
     if (its.s == nullptr)
         return Vector::zero();
 
     Point p = ray.o + ray.d * its.d;
-    TexPixel const& tp = its.s->get_tex(p);
-    Line const& norm = its.s->get_normal(p);
+    TexPixel const &tp = its.s->get_tex(p);
+    Line const &norm = its.s->get_normal(p);
     Vector reflection = ray.d - 2 * (ray.d * norm.d) * norm.d;
     Vector lum = tp.ka.to_vect() * 0.02;
     for (auto l : lights_) {
         Vector l_dir = (l->pos() - p).normalized();
-        Intersection const& lits = cast_ray({p, l_dir});
+        Intersection const &lits = cast_ray({p, l_dir});
         if (lits.s != nullptr && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
             continue;
         Vector local_lum = tp.kd * tp.ka.to_vect() * std::clamp(norm.d * l_dir, 0.f, INFINITY) +
@@ -66,15 +75,17 @@ Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_
         return lum;
 
     Line reflection_ray(p, reflection);
-    Intersection const& rits = cast_ray(reflection_ray);
+    Intersection const &rits = cast_ray(reflection_ray);
     return lum + tp.kd * get_light_value(rits, reflection_ray, rec_lvl + 1);
 }
 
 Image Scene::render(unsigned int width, unsigned int height) {
     Image img = Image(width, height);
+    auto i = 0u, j = 0u;
 
-    for (auto i = 0u; i < height; ++i) {
-        for (auto j = 0u; j < width; ++j) {
+    #pragma omp parallel for private(i, j) shared(img) num_threads(16) collapse(2)
+    for (i = 0u; i < height; ++i) {
+        for (j = 0u; j < width; ++j) {
             Point z_target =
                     tl_ + ((float) i * h_ / height) * cam_.down() + ((float) j * w_ / width) * cam_.right();
             Vector ray_dir = (z_target - cam_.getPos()).normalized();
@@ -149,9 +160,9 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
                         tl_ + ((float) i * h_ / height) * cam_.down() + ((float) j * w_ / width) * cam_.right();
                 Vector ray_dir = (z_target - cam_.getPos()).normalized();
                 Line ray = {z_target, ray_dir};
-                Intersection const& its = cast_ray(ray);
+                Intersection const &its = cast_ray(ray);
 
-                Color const& c = Color::from_vect(get_light_value(its, ray));
+                Color const &c = Color::from_vect(get_light_value(its, ray));
                 *px++ = c.r;
                 *px++ = c.g;
                 *px++ = c.b;

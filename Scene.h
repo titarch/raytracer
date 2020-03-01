@@ -11,7 +11,7 @@
 #include "Camera.h"
 #include "Image.h"
 
-#define REFLECTION_REC_LVL_MAX 10
+#define REFLECTION_REC_LVL_MAX 0
 
 class Scene {
 public:
