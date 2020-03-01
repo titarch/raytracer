@@ -36,7 +36,7 @@ struct Compare {
 Intersection Scene::cast_ray(const Line &ray) {
 
     float dists[solids_.size()];
-    #pragma omp simd
+#pragma omp simd
     for (unsigned i = 0u; i < solids_.size(); ++i)
         dists[i] = solids_[i]->intersects(ray);
 
@@ -83,7 +83,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
     Image img = Image(width, height);
     auto i = 0u, j = 0u;
 
-    #pragma omp parallel for private(i, j) shared(img) num_threads(16) collapse(2)
+#pragma omp parallel for private(i, j) shared(img) num_threads(16) collapse(2)
     for (i = 0u; i < height; ++i) {
         for (j = 0u; j < width; ++j) {
             Point z_target =
@@ -154,8 +154,10 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
 
         auto *px = pixels;
 
-        for (auto i = 0u; i < height; ++i) {
-            for (auto j = 0u; j < width; ++j) {
+        unsigned i, j;
+#pragma omp parallel for private(i, j) shared(img) num_threads(16) collapse(2)
+        for (i = 0u; i < height; ++i) {
+            for (j = 0u; j < width; ++j) {
                 Point z_target =
                         tl_ + ((float) i * h_ / height) * cam_.down() + ((float) j * w_ / width) * cam_.right();
                 Vector ray_dir = (z_target - cam_.getPos()).normalized();
@@ -163,10 +165,10 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
                 Intersection const &its = cast_ray(ray);
 
                 Color const &c = Color::from_vect(get_light_value(its, ray));
-                *px++ = c.r;
-                *px++ = c.g;
-                *px++ = c.b;
-                *px++ = 255;
+                px[4 * (i * width + j)] = c.r;
+                px[4 * (i * width + j) + 1] = c.g;
+                px[4 * (i * width + j) + 2] = c.b;
+                px[4 * (i * width + j) + 3] = 255;
             }
         }
 
