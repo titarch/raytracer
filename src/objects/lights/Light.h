@@ -9,10 +9,10 @@
 
 class Light {
 public:
-    Light(const Point& pos) : pos_(pos) {}
     Vector pos() const;
 
 protected:
+    Light(const Point& pos) : pos_(pos) {}
     Point pos_;
 };
 
