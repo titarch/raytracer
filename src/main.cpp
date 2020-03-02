@@ -1,8 +1,12 @@
 #include <iostream>
-#include "Vector.h"
-#include "Image.h"
-#include "Scene.h"
-#include "Blob.h"
+#include "utils/Vector.h"
+#include "engine/Camera.h"
+#include "engine/Scene.h"
+#include "objects/textures/UniTex.h"
+#include "objects/solids/Sphere.h"
+#include "objects/solids/Plane.h"
+#include "objects/lights/PointLight.h"
+#include "engine/Blob.h"
 
 int main() {
     Camera cam(Point::back() * 7, Vector::forward(), Vector::up(), M_PI / 2, atanf(16.f / 9), 0.05);
@@ -35,11 +39,11 @@ int main() {
 //    img.save_ppm("test.ppm");
 
     Blob blob({
-        ChargedPoint{Point{-1.5, 0, 3}, 1.01},
-        ChargedPoint{Point{1.5, 0, 3}, 1.02}
-        }, Blob::pf_square, {
-        Point{-3, -3, 0}, 6
-        }, 0.5, 0.5);
+                      ChargedPoint{Point{-1.5, 0, 3}, 1.01},
+                      ChargedPoint{Point{1.5, 0, 3}, 1.02}
+              }, Blob::pf_square, {
+                      Point{-3, -3, 0}, 6
+              }, 0.5, 0.5);
     blob.render(scene, tex);
 
 //    scene.render(1920, 1080).save_now();

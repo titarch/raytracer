@@ -4,6 +4,7 @@
 
 #include "Blob.h"
 #include "cubetrig.h"
+#include "../objects/solids/Triangle.h"
 
 Point Blob::cube_corner(uint8_t edge) const {
     switch (edge) {

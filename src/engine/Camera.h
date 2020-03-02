@@ -6,38 +6,24 @@
 #define RAYTRACER_CAMERA_H
 
 
-#include "Point.h"
+#include "../utils/Point.h"
 
 class Camera {
 public:
     Camera(const Point& pos, const Vector& forward, const Vector& up, float x, float y, float zmin);
-
     float width();
-
     float height();
-
     [[nodiscard]] Vector left() const;
-
     [[nodiscard]] Vector right() const;
-
     [[nodiscard]] Vector up() const;
-
     [[nodiscard]] Vector down() const;
-
     [[nodiscard]] Vector back() const;
-
     [[nodiscard]] Vector forward() const;
-
     [[nodiscard]] const Point& getPos() const;
-
     [[nodiscard]] float getZmin() const;
-
     void setPos(const Point& pos);
-
     void move(Vector const& d);
-
     void rotate(float theta, float phi, float psi);
-
 
 private:
     Point pos_;

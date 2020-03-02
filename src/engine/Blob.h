@@ -6,8 +6,9 @@
 #define RAYTRACER_BLOB_H
 
 #include <functional>
-#include "Point.h"
 #include "Scene.h"
+#include "../utils/Point.h"
+#include "../objects/textures/TexMat.h"
 
 struct ChargedPoint {
     Point p;
@@ -37,7 +38,6 @@ public:
     }
 
     void render(Scene &s, TexMat& tex);
-
     static float pf_linear(Point const &p, Blob const &b);
     static float pf_square(Point const &p, Blob const &b);
 
@@ -50,15 +50,10 @@ private:
     Point curr_cube_;
 
     [[nodiscard]] Point cube_corner(uint8_t corner) const;
-
     [[nodiscard]] Point middle(uint8_t x, uint8_t y) const;
-
     [[nodiscard]] Point cube_edge(uint8_t edge) const;
-
     [[nodiscard]] float potential(uint8_t corner) const;
-
     [[nodiscard]] uint8_t get_index() const;
-
     void add_triangles(Scene &s, TexMat &t) const;
 };
 

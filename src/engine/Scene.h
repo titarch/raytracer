@@ -6,10 +6,11 @@
 #define RAYTRACER_SCENE_H
 
 #include <vector>
-#include "objects.h"
-#include "lights.h"
 #include "Camera.h"
 #include "Image.h"
+#include "../objects/solids/Solid.h"
+#include "../objects/lights/Light.h"
+#include "../objects/solids/Intersection.h"
 
 #define REFLECTION_REC_LVL_MAX 0
 
@@ -25,8 +26,8 @@ public:
     void render_rt(unsigned int width, unsigned int height);
 protected:
     Camera& cam_;
-    std::vector<Solid*> solids_;
-    std::vector<Light*> lights_;
+    std::vector<Solid *> solids_;
+    std::vector<Light *> lights_;
     float w_;
     float h_;
     Point center_, tl_;

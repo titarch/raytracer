@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.10)
 project(raytracer)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -11,5 +11,5 @@ set(CMAKE_CXX_FLAGS_DEBUG    "-g  -Wall -Wextra")
 find_package(SFML 2.5 COMPONENTS graphics audio REQUIRED)
 find_package(OpenMP REQUIRED)
 
-add_executable(${EXECUTABLE_NAME} main.cpp Point.cpp Point.h Color.cpp Color.h Vector.cpp Vector.h Image.cpp Image.h Scene.cpp Scene.h Textures.cpp Textures.h objects.cpp objects.h lights.cpp lights.h Camera.cpp Camera.h Blob.cpp Blob.h cubetrig.h)
-target_link_libraries(${EXECUTABLE_NAME} PUBLIC sfml-window sfml-graphics sfml-audio OpenMP::OpenMP_CXX)
+add_subdirectory(src)
+

@@ -6,12 +6,12 @@
 #define RAYTRACER_IMAGE_H
 
 #include <string>
-#include "Color.h"
+#include "../utils/Color.h"
 
 class Image {
 public:
     Image(unsigned w, unsigned h) : w_(w), h_(h) {
-        pixels_ = new Color*[h];
+        pixels_ = new Color *[h];
         for (auto i = 0u; i < h; ++i)
             pixels_[i] = new Color[w];
     }
@@ -25,7 +25,6 @@ public:
     void save_ppm(std::string const& path);
     void save_now();
     void test();
-
     void set_pix(unsigned int i, unsigned int i1, Color color);
 
 private:
