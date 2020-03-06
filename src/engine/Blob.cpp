@@ -4,7 +4,7 @@
 
 #include "Blob.h"
 #include "cubetrig.h"
-#include "../objects/solids/Triangle.h"
+#include "../objects/solids/MetaTriangle.h"
 
 Point Blob::cube_corner(uint8_t edge) const {
     switch (edge) {
@@ -81,8 +81,8 @@ uint8_t Blob::get_index() const {
     return index;
 }
 
-void Blob::add_triangles(Scene &s, TexMat &t) const {
-    auto tc = cube_tri_conf[get_index()];
+void Blob::add_triangles(Scene& s, TexMat& t) const {
+    const auto *tc = cube_tri_conf[get_index()];
 
     for (auto i = 0u; i < 15u; i += 3u) {
         int e0 = tc[i];
@@ -90,17 +90,17 @@ void Blob::add_triangles(Scene &s, TexMat &t) const {
             break;
         int e1 = tc[i + 1];
         int e2 = tc[i + 2];
-        const Point &v0 = cube_edge(e0);
-        const Point &v1 = cube_edge(e1);
-        const Point &v2 = cube_edge(e2);
+        const Point& v0 = cube_edge(e0);
+        const Point& v1 = cube_edge(e1);
+        const Point& v2 = cube_edge(e2);
 
-        auto *tri = new Triangle(t, v0, v1, v2);
+        auto* tri = new MetaTriangle(t, v0, v1, v2, *this, pf_linear_grad);
         s.add_solid(tri);
     }
 
 }
 
-void Blob::render(Scene &scene, TexMat &tex) {
+void Blob::render(Scene& scene, TexMat& tex) {
     for (auto i = 0u; i < nb_cubes_; ++i) {
         for (auto j = 0u; j < nb_cubes_; ++j) {
             for (auto k = 0u; k < nb_cubes_; ++k) {
@@ -111,16 +111,25 @@ void Blob::render(Scene &scene, TexMat &tex) {
     }
 }
 
-float Blob::pf_linear(const Point &p, const Blob &b) {
+float Blob::pf_linear(const Point& p, const Blob& b) {
     float e = 0;
-    for (const auto &cp : b.cps_)
+    for (const auto& cp : b.cps_)
         e += cp.e / (cp.p - p).magnitude();
     return e;
 }
 
-float Blob::pf_square(const Point &p, const Blob &b) {
+Vector Blob::pf_linear_grad(const Point& p, const Blob& b) {
+    Vector n{};
+    for (const auto& cp : b.cps_) {
+        Vector d = p - cp.p;
+        n += (2 * cp.e * d) / std::pow(d.sqrMagnitude(), 2);
+    }
+    return n.normalized();
+}
+
+float Blob::pf_square(const Point& p, const Blob& b) {
     float e = 0;
-    for (const auto &cp : b.cps_)
+    for (const auto& cp : b.cps_)
         e += cp.e / (cp.p - p).sqrMagnitude();
     return e;
 }

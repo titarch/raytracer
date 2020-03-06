@@ -6,6 +6,6 @@ set(solids_src_files
         Plane.h
         Plane.cpp
         Triangle.h
-        Triangle.cpp)
+        Triangle.cpp Cylinder.cpp Cylinder.h MetaTriangle.cpp MetaTriangle.h)
 add_library(solids ${solids_src_files})
 target_link_libraries(solids textures)

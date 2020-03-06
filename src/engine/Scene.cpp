@@ -83,7 +83,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
     Image img = Image(width, height);
     auto i = 0u, j = 0u;
 
-#pragma omp parallel for private(i, j) shared(img) num_threads(16) collapse(2)
+#pragma omp parallel for private(i, j) shared(img) collapse(2)
     for (i = 0u; i < height; ++i) {
         for (j = 0u; j < width; ++j) {
             Point z_target =
@@ -155,7 +155,7 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
         auto *px = pixels;
 
         unsigned i, j;
-#pragma omp parallel for private(i, j) shared(img) num_threads(16) collapse(2)
+#pragma omp parallel for private(i, j) shared(img) collapse(2)
         for (i = 0u; i < height; ++i) {
             for (j = 0u; j < width; ++j) {
                 Point z_target =
