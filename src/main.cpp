@@ -7,6 +7,7 @@
 #include "objects/solids/Plane.h"
 #include "objects/lights/PointLight.h"
 #include "engine/Blob.h"
+#include "objects/solids/Cylinder.h"
 
 int main() {
     Camera cam(Point::back() * 7, Vector::forward(), Vector::up(), M_PI / 2, atanf(16.f / 9), 0.05);
@@ -28,6 +29,9 @@ int main() {
 //    scene.add_solid(&plane);
 //    scene.add_solid(&plane2);
 
+    Cylinder cyl(Vector::zero(), tex, Vector::zero(), 0.5, 1);
+    scene.add_solid(&cyl);
+
 //    Triangle tri(tex, Vector::up(), Vector::left() + Vector::forward(), Vector());
 //    scene.add_solid(&tri);
 
@@ -38,15 +42,16 @@ int main() {
 //    Image img = scene.render(1000, 1000);
 //    img.save_ppm("test.ppm");
 
-    Blob blob({
-                      ChargedPoint{Point{-1.5, 0, 3}, 1.01},
-                      ChargedPoint{Point{1.5, 0, 3}, 1.02}
-              }, Blob::pf_square, {
-                      Point{-3, -3, 0}, 6
-              }, 0.5, 0.5);
-    blob.render(scene, tex);
+//    Blob blob({
+//                      ChargedPoint{Point{-1.5, 0, 3}, 1.01},
+//                      ChargedPoint{Point{1.5, 0, 3}, 1.02}
+//              }, Blob::pf_square, {
+//                      Point{-3, -3, 0}, 6
+//              }, 0.5, 0.5);
+//    blob.render(scene, tex);
 
 //    scene.render(1920, 1080).save_now();
+
     scene.render_rt(1920, 1080);
     return 0;
 }
