@@ -7,6 +7,6 @@ set(engine_src_files
         Blob.h
         Blob.cpp
         Scene.h
-        Scene.cpp)
+        Scene.cpp ray.h)
 add_library(engine ${engine_src_files})
 target_link_libraries(engine PUBLIC objects utils sfml-window sfml-graphics sfml-audio OpenMP::OpenMP_CXX)

@@ -4,6 +4,7 @@
 
 #include "Scene.h"
 #include <SFML/Graphics.hpp>
+#include "ray.h"
 
 Scene::Scene(Camera &cam) : cam_(cam), solids_(), lights_() {
     w_ = cam.width();
@@ -28,28 +29,8 @@ void Scene::add_light(Light *l) {
     lights_.push_back(l);
 }
 
-struct Compare {
-    float val;
-    int index;
-};
-
 Intersection Scene::cast_ray(const Line &ray) {
-
-    float dists[solids_.size()];
-#pragma omp simd
-    for (unsigned i = 0u; i < solids_.size(); ++i)
-        dists[i] = solids_[i]->intersects(ray);
-
-    Compare min{INFINITY, -1};
-    for (auto k = 0u; k < solids_.size(); ++k) {
-        if (dists[k] < min.val) {
-            min.val = dists[k];
-            min.index = k;
-        }
-    }
-    if (min.index == -1)
-        return Intersection{-1, nullptr};
-    return Intersection{min.val, solids_[min.index]};
+    return ray::cast_ray(solids_, ray);
 }
 
 Vector Scene::get_light_value(Intersection const &its, Line const &ray, int rec_lvl) {
