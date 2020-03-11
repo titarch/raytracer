@@ -48,7 +48,6 @@ Line Cylinder::get_normal(const Point& p) const {
         return {p, -cd_};
 
     auto v = p - (cb_ + ((p - cb_) * cd_) * cd_);
-    std::cout << v * cd_ << std::endl;
     return {p, v.normalized()};
 }
 

@@ -46,7 +46,7 @@ Vector Scene::get_light_value(Intersection const &its, Line const &ray, int rec_
     TexPixel const &tp = its.s->get_tex(p);
     Line const &norm = its.s->get_normal(p);
     Vector reflection = ray.d - 2 * (ray.d * norm.d) * norm.d;
-    Vector lum = tp.ka.to_vect() * 0.02;
+    Vector lum = tp.ka.to_vect() * 0.1;
     for (auto l : lights_) {
         Vector l_dir = (l->pos() - p).normalized();
         Intersection const &lits = cast_ray({p, l_dir});
