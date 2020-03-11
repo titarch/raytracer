@@ -24,6 +24,7 @@ public:
     Vector get_light_value(Intersection const& its, Line const& ray, int rec_lvl = 0);
     Image render(unsigned width, unsigned height);
     void render_rt(unsigned int width, unsigned int height);
+    void load(const char* path);
 protected:
     Camera& cam_;
     std::vector<Solid *> solids_;

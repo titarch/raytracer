@@ -10,8 +10,7 @@
 
 class Cylinder : public Solid {
 public:
-    Cylinder(const Point& pos, TexMat& tex,
-             const Point& cb, const Vector& d, float r) : Solid(pos, tex), cb_(cb), r_(r) {
+    Cylinder(const Point& cb, TexMat& tex, const Vector& d, float r) : Solid(cb, tex), cb_(cb), r_(r) {
         cd_ = d.normalized();
         h_ = d.magnitude();
         ct_ = cb_ + h_ * cd_;

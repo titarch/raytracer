@@ -4,7 +4,12 @@
 
 #include "Scene.h"
 #include <SFML/Graphics.hpp>
+#include <yaml-cpp/yaml.h>
+#include "convert.h"
+#include <iostream>
 #include "ray.h"
+#include "../objects/solids/Cylinder.h"
+#include "../objects/textures/UniTex.h"
 
 Scene::Scene(Camera &cam) : cam_(cam), solids_(), lights_() {
     w_ = cam.width();
@@ -163,4 +168,21 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
     }
 
     delete[] pixels;
+}
+
+void Scene::load(const char *path) {
+    static UniTex tex(Color(255, 0, 200), 0.5, 0.5, 5);
+    YAML::Node node = YAML::LoadFile(path);
+    const auto solids = node["objects"]["solids"][0];
+    for (const auto& solid : solids) {
+        if (solid["type"].as<std::string>() == "cylinder") {
+            auto base = solid["base"].as<Vector>();
+            auto axis = solid["axis"].as<Vector>();
+            auto radius = solid["radius"].as<float>();
+            auto *cyl = new Cylinder(base, tex, axis, radius);
+            add_solid(cyl);
+        }
+    }
+//    for (const auto& solid : node["objects"]["solids"])
+//        std::cout << solid << std::endl;
 }

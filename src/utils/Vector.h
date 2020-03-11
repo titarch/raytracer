@@ -135,7 +135,6 @@ public:
         return z_;
     }
 
-private:
     float x_, y_, z_;
 };
 
