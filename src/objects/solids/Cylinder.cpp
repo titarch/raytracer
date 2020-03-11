@@ -2,33 +2,37 @@
 // Created by parsy_b on 3/6/20.
 //
 
+#include <iostream>
 #include "Cylinder.h"
 
 float Cylinder::intersects(const Line& line) const {
-    Point p0 = line.o - cb_;
-    float a = line.d.x() * line.d.x() + line.d.z() * line.d.z();
-    float b = line.d.x() * p0.x() + line.d.z() * p0.z();
-    float c = p0.x() * p0.x() + p0.z() * p0.z() - r_ * r_;
+    auto dp = line.o - cb_;
+    auto e = line.d - (line.d * cd_) * cd_;
+    float a = e.sqrMagnitude();
+    auto f = dp - (dp * cd_) * cd_;
+    float b = e * f;
+    float c = f.sqrMagnitude() - r_ * r_;
+
     float delta = b * b - a * c;
     if (delta < EPS)
         return INFINITY;
     float t = (-b - std::sqrt(delta)) / a;
     if (t < EPS)
         return INFINITY;
-    float y = p0.y() + t * line.d.y();
-    if (y > h_ + EPS || y < -EPS) {
-        bool its = false;
+    auto q = line.o + t * line.d;
+    if (cd_ * (q - cb_) <= 0 || cd_ * (q - ct_) >= 0) {
+        bool changed = false;
         float dist = intersects_base(line, false);
         if (dist < INFINITY) {
             t = dist;
-            its = true;
+            changed = true;
         }
         dist = intersects_base(line, true);
-        if (dist < INFINITY && dist > EPS && t >= dist) {
+        if ((dist < INFINITY && !changed) || dist < t) {
             t = dist;
-            its = true;
+            changed = true;
         }
-        if (!its)
+        if (!changed)
             return INFINITY;
     }
     return t;
@@ -36,13 +40,15 @@ float Cylinder::intersects(const Line& line) const {
 }
 
 Line Cylinder::get_normal(const Point& p) const {
-    if (p.x() < cb_.x() + r_ && p.x() > cb_.x() - r_ && p.z() < cb_.z() + r_ && p.z() > cb_.z() - r_) {
-        if (p.y() < cb_.y() + h_ + EPS && p.y() > cb_.y() + h_ - EPS)
-            return {p, Vector::up()};
-        if (p.y() < cb_.y() + EPS && p.y() > cb_.y() - EPS)
-            return {p, Vector::down()};
-    }
-    Vector v = p - Vector{cb_.x(), p.y(), cb_.z()};
+    auto pcb = (p - cb_);
+    auto pct = (p - ct_);
+    if (pct.sqrMagnitude() - r_ * r_ < EPS && pct * cd_ > EPS)
+        return {p, cd_};
+    if (pcb.sqrMagnitude() - r_ * r_ < EPS && pcb * cd_ < -EPS)
+        return {p, -cd_};
+
+    auto v = p - (cb_ + ((p - cb_) * cd_) * cd_);
+    std::cout << v * cd_ << std::endl;
     return {p, v.normalized()};
 }
 
@@ -52,20 +58,19 @@ TexPixel Cylinder::get_tex(const Point& p) const {
 
 float Cylinder::intersects_base(const Line& line, bool bottom) const {
     const auto& c = bottom ? cb_ : ct_;
-    const auto& N = get_normal(c);
-    Point p0 = line.o - c;
-    float D = -(N.d * (c - cb_));
+    const auto& n = bottom ? -cd_ : cd_;
 
-    if (std::fabs(N.d * line.d) < EPS)
+    Point p0 = line.o - c;
+    float denom = n * line.d;
+    if (std::fabs(denom) < EPS)
         return INFINITY;
 
-    float dist = -(N.d * p0 + D) / (N.d * line.d);
-
+    float dist = (-p0 * n) / denom;
     if (dist < EPS)
         return INFINITY;
+    Point p = line.o + dist * line.d;
 
-    Point p = p0 + dist * line.d;
-    if (p.x() * p.x() + p.z() * p.z() - r_ * r_ > EPS)
+    if ((p - c).sqrMagnitude() - r_ * r_ > EPS)
         return INFINITY;
 
     return dist;

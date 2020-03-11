@@ -29,7 +29,7 @@ int main() {
 //    scene.add_solid(&plane);
 //    scene.add_solid(&plane2);
 
-    Cylinder cyl(Vector::zero(), tex, Vector::zero(), 0.5, 1);
+    Cylinder cyl(Vector::zero(), tex, Vector::zero(), Vector::up() + Vector::left(), 0.5);
     scene.add_solid(&cyl);
 
 //    Triangle tri(tex, Vector::up(), Vector::left() + Vector::forward(), Vector());
