@@ -12,7 +12,7 @@
 #include "../objects/lights/Light.h"
 #include "../objects/solids/Intersection.h"
 
-#define REFLECTION_REC_LVL_MAX 0
+#define REFLECTION_REC_LVL_MAX 3
 
 class Scene {
 public:

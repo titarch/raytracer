@@ -19,14 +19,14 @@ int main() {
     Sphere sph2(Point::left() + Point::back() * 2, tex2, 0.7);
     UniTex tex3(Color(255, 200, 20), 0.5, 0.5, 3);
     Sphere sph3(Point::left() * 2.2 + Point::back() * 2.3 + Point::up() * 0.2, tex3, 0.3);
-//    scene.add_solid(&sph);
-//    scene.add_solid(&sph2);
+    scene.add_solid(&sph);
+    scene.add_solid(&sph2);
     scene.add_solid(&sph3);
 
     UniTex tex4(Color(0, 32, 255), 1, 0.1, 1);
     Plane plane(Point::down() * 2, tex4, Vector::up());
     Plane plane2(Point::up() * 4, tex4, Vector::down());
-//    scene.add_solid(&plane);
+    scene.add_solid(&plane);
 //    scene.add_solid(&plane2);
 
 //    Cylinder cyl(Vector::zero(), tex, Vector::zero(), Vector::up() + Vector::left(), 0.5);
@@ -51,7 +51,7 @@ int main() {
 //    blob.render(scene, tex);
 
 //    scene.render(1920, 1080).save_now();
-    scene.load("objs.yaml");
+//    scene.load("objs.yaml");
     scene.render_rt(1920, 1080);
     return 0;
 }
