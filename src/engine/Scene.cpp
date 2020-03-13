@@ -10,8 +10,9 @@
 #include "ray.h"
 #include "../objects/solids/Cylinder.h"
 #include "../objects/textures/UniTex.h"
+#include "../objects/solids/Sphere.h"
 
-Scene::Scene(Camera &cam) : cam_(cam), solids_(), lights_() {
+Scene::Scene(Camera& cam) : cam_(cam), solids_(), lights_() {
     w_ = cam.width();
     h_ = cam.height();
     update_view();
@@ -19,37 +20,37 @@ Scene::Scene(Camera &cam) : cam_(cam), solids_(), lights_() {
 
 void Scene::update_view() {
     double zmin = cam_.getZmin();
-    const Point &pos = cam_.getPos();
-    const Vector &fw = cam_.forward();
+    const Point& pos = cam_.getPos();
+    const Vector& fw = cam_.forward();
 
     center_ = pos + fw * zmin;
     tl_ = center_ + (w_ / 2) * cam_.left() + (h_ / 2) * cam_.up();
 }
 
-void Scene::add_solid(Solid *s) {
+void Scene::add_solid(Solid* s) {
     solids_.push_back(s);
 }
 
-void Scene::add_light(Light *l) {
+void Scene::add_light(Light* l) {
     lights_.push_back(l);
 }
 
-Intersection Scene::cast_ray(const Line &ray) {
+Intersection Scene::cast_ray(const Line& ray) {
     return ray::cast_ray(solids_, ray);
 }
 
-Vector Scene::get_light_value(Intersection const &its, Line const &ray, int rec_lvl) {
+Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_lvl) {
     if (its.s == nullptr)
         return Vector::zero();
 
     Point p = ray.o + ray.d * its.d;
-    TexPixel const &tp = its.s->get_tex(p);
-    Line const &norm = its.s->get_normal(p);
+    TexPixel const& tp = its.s->get_tex(p);
+    Line const& norm = its.s->get_normal(p);
     Vector reflection = ray.d - 2 * (ray.d * norm.d) * norm.d;
     Vector lum = tp.ka.to_vect() * 0.1;
     for (auto l : lights_) {
         Vector l_dir = (l->pos() - p).normalized();
-        Intersection const &lits = cast_ray({p, l_dir});
+        Intersection const& lits = cast_ray({p, l_dir});
         if (lits.s != nullptr && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
             continue;
         Vector local_lum = tp.kd * tp.ka.to_vect() * std::clamp(norm.d * l_dir, 0.0, Inf) +
@@ -61,7 +62,7 @@ Vector Scene::get_light_value(Intersection const &its, Line const &ray, int rec_
         return lum;
 
     Line reflection_ray(p, reflection);
-    Intersection const &rits = cast_ray(reflection_ray);
+    Intersection const& rits = cast_ray(reflection_ray);
     return lum + tp.kd * get_light_value(rits, reflection_ray, rec_lvl + 1);
 }
 
@@ -87,7 +88,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
 
 void Scene::render_rt(unsigned int width, unsigned int height) {
     sf::RenderWindow window(sf::VideoMode(width, height), "sfml-raytracer");
-    auto *pixels = new sf::Uint8[width * height * 4];
+    auto* pixels = new sf::Uint8[width * height * 4];
     sf::Image img;
     sf::Texture stex;
     sf::Sprite sprite;
@@ -138,7 +139,7 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
         }
 
 
-        auto *px = pixels;
+        auto* px = pixels;
 
         unsigned i, j;
 #pragma omp parallel for private(i, j) shared(img) collapse(2)
@@ -148,9 +149,9 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
                         tl_ + ((double) i * h_ / height) * cam_.down() + ((double) j * w_ / width) * cam_.right();
                 Vector ray_dir = (z_target - cam_.getPos()).normalized();
                 Line ray = {z_target, ray_dir};
-                Intersection const &its = cast_ray(ray);
+                Intersection const& its = cast_ray(ray);
 
-                Color const &c = Color::from_vect(get_light_value(its, ray));
+                Color const& c = Color::from_vect(get_light_value(its, ray));
                 px[4 * (i * width + j)] = c.r;
                 px[4 * (i * width + j) + 1] = c.g;
                 px[4 * (i * width + j) + 2] = c.b;
@@ -170,19 +171,47 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
     delete[] pixels;
 }
 
-void Scene::load(const char *path) {
-    static UniTex tex(Color(255, 0, 200), 0.5, 0.5, 5);
+void Scene::load(const char* path) {
+    static UniTex default_tex(Color(255, 255, 255), 0.5, 0.5, 5);
     YAML::Node node = YAML::LoadFile(path);
+
+
+    const auto textures = node["textures"][0];
+    std::vector<TexMat*> texs;
+    for (const auto& texture : textures) {
+        TexMat* tex = nullptr;
+        if (texture["type"].as<std::string>() == "uni") {
+            auto r = texture["r"].as<uint8_t>();
+            auto g = texture["g"].as<uint8_t>();
+            auto b = texture["b"].as<uint8_t>();
+            auto kd = texture["kd"].as<double>();
+            auto ks = texture["ks"].as<double>();
+            auto ns = texture["ns"].as<double>();
+            tex = new UniTex(Color(r, g, b), kd, ks, ns);
+        }
+        texs.push_back(tex);
+    }
+
     const auto solids = node["objects"]["solids"][0];
     for (const auto& solid : solids) {
-        if (solid["type"].as<std::string>() == "cylinder") {
+        auto type = solid["type"].as<std::string>();
+        Solid* s = nullptr;
+        if (type == "cylinder") {
+            auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
+            auto* tex = tex_idx >=0 ? texs[tex_idx] : &default_tex;
             auto base = solid["base"].as<Vector>();
             auto axis = solid["axis"].as<Vector>();
             auto radius = solid["radius"].as<double>();
-            auto *cyl = new Cylinder(base, tex, axis, radius);
-            add_solid(cyl);
+            s = new Cylinder(base, *tex, axis, radius);
+        } else if (type == "sphere") {
+            auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
+            auto* tex = tex_idx >=0 ? texs[tex_idx] : &default_tex;
+            auto origin = solid["origin"].as<Vector>();
+            auto radius = solid["radius"].as<double>();
+            s = new Sphere(origin, *tex, radius);
         }
+        if (s == nullptr)
+            throw std::invalid_argument(std::string("Unrcognized solid type: ") + type);
+        add_solid(s);
     }
-//    for (const auto& solid : node["objects"]["solids"])
-//        std::cout << solid << std::endl;
 }
