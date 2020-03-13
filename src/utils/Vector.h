@@ -11,13 +11,13 @@
 
 class Vector {
 public:
-    explicit Vector(float x = 0, float y = 0, float z = 0) : x_(x), y_(y), z_(z) {}
+    explicit Vector(double x = 0, double y = 0, double z = 0) : x_(x), y_(y), z_(z) {}
 
-    [[nodiscard]] float sqrMagnitude() const {
+    [[nodiscard]] double sqrMagnitude() const {
         return x_ * x_ + y_ * y_ + z_ * z_;
     }
 
-    [[nodiscard]] float magnitude() const {
+    [[nodiscard]] double magnitude() const {
         return std::sqrt(sqrMagnitude());
     }
 
@@ -45,14 +45,14 @@ public:
         return *this;
     }
 
-    Vector& operator*=(float k) {
+    Vector& operator*=(double k) {
         x_ *= k;
         y_ *= k;
         z_ *= k;
         return *this;
     }
 
-    Vector& operator/=(float k) {
+    Vector& operator/=(double k) {
         x_ /= k;
         y_ /= k;
         z_ /= k;
@@ -66,7 +66,7 @@ public:
         return *this;
     }
 
-    Vector& operator%=(float k) {
+    Vector& operator%=(double k) {
         x_ = std::pow(x_, k);
         y_ = std::pow(y_, k);
         z_ = std::pow(z_, k);
@@ -74,16 +74,16 @@ public:
     }
 
     Vector& operator^=(Vector const& rhs) {
-        float x = y_ * rhs.z_ - z_ * rhs.y_;
-        float y = z_ * rhs.x_ - x_ * rhs.z_;
-        float z = x_ * rhs.y_ - y_ * rhs.x_;
+        double x = y_ * rhs.z_ - z_ * rhs.y_;
+        double y = z_ * rhs.x_ - x_ * rhs.z_;
+        double z = x_ * rhs.y_ - y_ * rhs.x_;
         x_ = x;
         y_ = y;
         z_ = z;
         return *this;
     }
 
-    friend inline float operator*(Vector const& lhs, Vector const& rhs) {
+    friend inline double operator*(Vector const& lhs, Vector const& rhs) {
         return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_ + lhs.z_ * rhs.z_;
     }
 
@@ -123,19 +123,19 @@ public:
         return Vector(0, 0, -1);
     }
 
-    [[nodiscard]] float x() const {
+    [[nodiscard]] double x() const {
         return x_;
     }
 
-    [[nodiscard]] float y() const {
+    [[nodiscard]] double y() const {
         return y_;
     }
 
-    [[nodiscard]] float z() const {
+    [[nodiscard]] double z() const {
         return z_;
     }
 
-    float x_, y_, z_;
+    double x_, y_, z_;
 };
 
 inline Vector operator+(Vector lhs, Vector const& rhs) {
@@ -148,17 +148,17 @@ inline Vector operator-(Vector lhs, Vector const& rhs) {
     return lhs;
 }
 
-inline Vector operator*(Vector lhs, float rhs) {
+inline Vector operator*(Vector lhs, double rhs) {
     lhs *= rhs;
     return lhs;
 }
 
-inline Vector operator*(float lhs, Vector rhs) {
+inline Vector operator*(double lhs, Vector rhs) {
     rhs *= lhs;
     return rhs;
 }
 
-inline Vector operator/(Vector lhs, float rhs) {
+inline Vector operator/(Vector lhs, double rhs) {
     lhs /= rhs;
     return lhs;
 }
@@ -168,7 +168,7 @@ inline Vector operator%(Vector lhs, Vector const& rhs) {
     return lhs;
 }
 
-inline Vector operator%(Vector lhs, float rhs) {
+inline Vector operator%(Vector lhs, double rhs) {
     lhs %= rhs;
     return lhs;
 }

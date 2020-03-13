@@ -7,13 +7,13 @@
 #include <cmath>
 
 Camera::Camera(const Point& pos, const Vector& forward, const Vector& up,
-               float x, float y, float zmin) : pos_(pos), forward_(forward), up_(up), x_(x), y_(y), zmin_(zmin) {}
+               double x, double y, double zmin) : pos_(pos), forward_(forward), up_(up), x_(x), y_(y), zmin_(zmin) {}
 
-float Camera::width() {
+double Camera::width() {
     return 2 * zmin_ * tanf(x_ / 2);
 }
 
-float Camera::height() {
+double Camera::height() {
     return 2 * zmin_ * tanf(y_ / 2);
 }
 
@@ -21,7 +21,7 @@ const Point& Camera::getPos() const {
     return pos_;
 }
 
-float Camera::getZmin() const {
+double Camera::getZmin() const {
     return zmin_;
 }
 
@@ -33,17 +33,17 @@ void Camera::move(const Vector& d) {
     pos_ += d * 0.1;
 }
 
-void Camera::rotate(float theta, float phi, float psi) {
+void Camera::rotate(double theta, double phi, double psi) {
     (void) psi;
     if (std::fabs(theta) > 0) {
-        float x = forward_.x() * cosf(theta) + forward_.z() * sinf(theta);
-        float z = forward_.z() * cosf(theta) - forward_.x() * sinf(theta);
+        double x = forward_.x() * cosf(theta) + forward_.z() * sinf(theta);
+        double z = forward_.z() * cosf(theta) - forward_.x() * sinf(theta);
         forward_ = Vector{x, forward_.y(), z}.normalized();
     }
 
     if (std::fabs(phi) > 0) {
-        float y = up_.y() * cosf(phi) - up_.z() * sinf(phi);
-        float z = up_.y() * sinf(phi) + up_.z() * cosf(phi);
+        double y = up_.y() * cosf(phi) - up_.z() * sinf(phi);
+        double z = up_.y() * sinf(phi) + up_.z() * cosf(phi);
         up_ = Vector{up_.x(), y, z}.normalized();
 
         y = -up_.z();

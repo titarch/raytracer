@@ -4,19 +4,19 @@
 
 #include "Triangle.h"
 
-float Triangle::intersects(const Line& line) const {
+double Triangle::intersects(const Line& line) const {
     auto h = line.d ^(-e2_);
     auto a = e0_ * h;
-    if (std::fabs(a) < EPS) return INFINITY;
-    float f = 1.f / a;
+    if (std::fabs(a) < EPS) return Inf;
+    double f = 1.f / a;
     auto s = line.o - v0_;
-    float u = f * (s * h);
-    if (u < 0.0 || u > 1.0) return INFINITY;
+    double u = f * (s * h);
+    if (u < 0.0 || u > 1.0) return Inf;
     auto q = s ^e0_;
-    float v = f * line.d * q;
-    if (v < 0.0 || u + v > 1.0) return INFINITY;
-    float t = f * (-e2_ * q);
-    if (t < EPS) return INFINITY;
+    double v = f * line.d * q;
+    if (v < 0.0 || u + v > 1.0) return Inf;
+    double t = f * (-e2_ * q);
+    if (t < EPS) return Inf;
 
     return t;
 }

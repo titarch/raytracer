@@ -8,9 +8,9 @@
 #include "Solid.h"
 
 struct Intersection {
-    Intersection(float d_, Solid *s_) : d(d_), s(s_) {}
+    Intersection(double d_, Solid *s_) : d(d_), s(s_) {}
 
-    float d;
+    double d;
     Solid *s;
 };
 

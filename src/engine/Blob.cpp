@@ -64,7 +64,7 @@ Point Blob::cube_edge(uint8_t edge) const {
     }
 }
 
-float Blob::potential(uint8_t corner) const {
+double Blob::potential(uint8_t corner) const {
     return pf_(cube_corner(corner), *this);
 }
 
@@ -111,8 +111,8 @@ void Blob::render(Scene& scene, TexMat& tex) {
     }
 }
 
-float Blob::pf_linear(const Point& p, const Blob& b) {
-    float e = 0;
+double Blob::pf_linear(const Point& p, const Blob& b) {
+    double e = 0;
     for (const auto& cp : b.cps_)
         e += cp.e / (cp.p - p).magnitude();
     return e;
@@ -127,8 +127,8 @@ Vector Blob::pf_linear_grad(const Point& p, const Blob& b) {
     return n.normalized();
 }
 
-float Blob::pf_square(const Point& p, const Blob& b) {
-    float e = 0;
+double Blob::pf_square(const Point& p, const Blob& b) {
+    double e = 0;
     for (const auto& cp : b.cps_)
         e += cp.e / (cp.p - p).sqrMagnitude();
     return e;

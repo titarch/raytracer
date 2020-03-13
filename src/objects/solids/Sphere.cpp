@@ -4,17 +4,17 @@
 
 #include "Sphere.h"
 
-float Sphere::intersects(const Line& line) const {
+double Sphere::intersects(const Line& line) const {
     Vector oc = line.o - pos_;
-    float a = line.d.sqrMagnitude();
-    float b = 2.0 * line.d * oc;
-    float c = oc.sqrMagnitude() - r_ * r_;
-    float delta = b * b - 4 * a * c;
+    double a = line.d.sqrMagnitude();
+    double b = 2.0 * line.d * oc;
+    double c = oc.sqrMagnitude() - r_ * r_;
+    double delta = b * b - 4 * a * c;
     if (delta < 0)
-        return INFINITY;
-    float dist = (-b - std::sqrt(delta)) / (2 * a);
+        return Inf;
+    double dist = (-b - std::sqrt(delta)) / (2 * a);
     if (dist < EPS)
-        return INFINITY;
+        return Inf;
     return dist;
 }
 

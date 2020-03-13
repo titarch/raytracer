@@ -8,12 +8,12 @@
 #include "../../utils/Color.h"
 
 struct TexPixel {
-    TexPixel(Color const& ka_, float kd_, float ks_, float ns_) : ka(ka_), kd(kd_), ks(ks_), ns(ns_) {}
+    TexPixel(Color const& ka_, double kd_, double ks_, double ns_) : ka(ka_), kd(kd_), ks(ks_), ns(ns_) {}
 
     Color ka;
-    float kd;
-    float ks;
-    float ns;
+    double kd;
+    double ks;
+    double ns;
 };
 
 #endif //RAYTRACER_TEXPIXEL_H

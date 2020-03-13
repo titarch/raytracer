@@ -4,14 +4,14 @@
 
 #include "Plane.h"
 
-float Plane::intersects(const Line& line) const {
-    float denom = norm_ * line.d;
+double Plane::intersects(const Line& line) const {
+    double denom = norm_ * line.d;
     if (std::fabs(denom) > EPS) {
-        float dist = ((pos_ - line.o) * norm_) / denom;
+        double dist = ((pos_ - line.o) * norm_) / denom;
         if (dist > EPS)
             return dist;
     }
-    return INFINITY;
+    return Inf;
 }
 
 Line Plane::get_normal(const Point& p) const {

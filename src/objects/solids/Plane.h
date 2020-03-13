@@ -10,7 +10,7 @@
 class Plane : public Solid {
 public:
     Plane(const Point& pos, TexMat& tex, const Vector& norm) : Solid(pos, tex), norm_(norm) {}
-    float intersects(Line const& line) const override;
+    double intersects(Line const& line) const override;
     Line get_normal(Point const& p) const override;
     TexPixel get_tex(Point const& p) const override;
 

@@ -14,7 +14,7 @@ public:
     Wrapper(const Point& pos, TexMat& tex, const std::vector<Solid*>& solids) : Solid(pos, tex), solids_(solids),
                                                                                 last_solid_(nullptr) {}
 
-    float intersects(const Line& line) const override;
+    double intersects(const Line& line) const override;
     Line get_normal(const Point& p) const override;
     TexPixel get_tex(const Point& p) const override;
 private:

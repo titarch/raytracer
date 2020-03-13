@@ -9,14 +9,14 @@
 
 class UniTex : public TexMat {
 public:
-    UniTex(const Color& ka, float kd, float ks, float ns);
-    TexPixel get_tex(float x, float y) override;
+    UniTex(const Color& ka, double kd, double ks, double ns);
+    TexPixel get_tex(double x, double y) override;
 
 private:
     Color ka_;
-    float kd_;
-    float ks_;
-    float ns_;
+    double kd_;
+    double ks_;
+    double ns_;
     TexPixel tp_;
 };
 

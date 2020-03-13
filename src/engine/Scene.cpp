@@ -18,7 +18,7 @@ Scene::Scene(Camera &cam) : cam_(cam), solids_(), lights_() {
 }
 
 void Scene::update_view() {
-    float zmin = cam_.getZmin();
+    double zmin = cam_.getZmin();
     const Point &pos = cam_.getPos();
     const Vector &fw = cam_.forward();
 
@@ -52,8 +52,8 @@ Vector Scene::get_light_value(Intersection const &its, Line const &ray, int rec_
         Intersection const &lits = cast_ray({p, l_dir});
         if (lits.s != nullptr && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
             continue;
-        Vector local_lum = tp.kd * tp.ka.to_vect() * std::clamp(norm.d * l_dir, 0.f, INFINITY) +
-                           tp.ks * Vector::one() * std::pow(std::clamp(reflection * l_dir, 0.f, INFINITY), tp.ns);
+        Vector local_lum = tp.kd * tp.ka.to_vect() * std::clamp(norm.d * l_dir, 0.0, Inf) +
+                           tp.ks * Vector::one() * std::pow(std::clamp(reflection * l_dir, 0.0, Inf), tp.ns);
         lum += local_lum;
     }
 
@@ -73,7 +73,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
     for (i = 0u; i < height; ++i) {
         for (j = 0u; j < width; ++j) {
             Point z_target =
-                    tl_ + ((float) i * h_ / height) * cam_.down() + ((float) j * w_ / width) * cam_.right();
+                    tl_ + ((double) i * h_ / height) * cam_.down() + ((double) j * w_ / width) * cam_.right();
             Vector ray_dir = (z_target - cam_.getPos()).normalized();
             Line ray = {z_target, ray_dir};
             Intersection its = cast_ray(ray);
@@ -145,7 +145,7 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
         for (i = 0u; i < height; ++i) {
             for (j = 0u; j < width; ++j) {
                 Point z_target =
-                        tl_ + ((float) i * h_ / height) * cam_.down() + ((float) j * w_ / width) * cam_.right();
+                        tl_ + ((double) i * h_ / height) * cam_.down() + ((double) j * w_ / width) * cam_.right();
                 Vector ray_dir = (z_target - cam_.getPos()).normalized();
                 Line ray = {z_target, ray_dir};
                 Intersection const &its = cast_ray(ray);
@@ -178,7 +178,7 @@ void Scene::load(const char *path) {
         if (solid["type"].as<std::string>() == "cylinder") {
             auto base = solid["base"].as<Vector>();
             auto axis = solid["axis"].as<Vector>();
-            auto radius = solid["radius"].as<float>();
+            auto radius = solid["radius"].as<double>();
             auto *cyl = new Cylinder(base, tex, axis, radius);
             add_solid(cyl);
         }

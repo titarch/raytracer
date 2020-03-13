@@ -29,8 +29,8 @@ protected:
     Camera& cam_;
     std::vector<Solid *> solids_;
     std::vector<Light *> lights_;
-    float w_;
-    float h_;
+    double w_;
+    double h_;
     Point center_, tl_;
 
 };

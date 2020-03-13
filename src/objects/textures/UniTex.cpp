@@ -4,10 +4,10 @@
 
 #include "UniTex.h"
 
-UniTex::UniTex(const Color& ka, float kd, float ks, float ns) : ka_(ka), kd_(kd), ks_(ks), ns_(ns),
+UniTex::UniTex(const Color& ka, double kd, double ks, double ns) : ka_(ka), kd_(kd), ks_(ks), ns_(ns),
                                                                 tp_(ka, kd, ks, ns) {}
 
-TexPixel UniTex::get_tex(float x, float y) {
+TexPixel UniTex::get_tex(double x, double y) {
     (void) x;
     (void) y;
     return tp_;

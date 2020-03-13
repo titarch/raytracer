@@ -5,7 +5,7 @@
 #include "Wrapper.h"
 #include "../../engine/ray.h"
 
-float Wrapper::intersects(const Line& line) const {
+double Wrapper::intersects(const Line& line) const {
     Intersection its = ray::cast_ray(solids_, line);
 //    last_solid_ = its.s;
     return its.d;

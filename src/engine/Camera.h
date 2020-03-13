@@ -10,9 +10,9 @@
 
 class Camera {
 public:
-    Camera(const Point& pos, const Vector& forward, const Vector& up, float x, float y, float zmin);
-    float width();
-    float height();
+    Camera(const Point& pos, const Vector& forward, const Vector& up, double x, double y, double zmin);
+    double width();
+    double height();
     [[nodiscard]] Vector left() const;
     [[nodiscard]] Vector right() const;
     [[nodiscard]] Vector up() const;
@@ -20,17 +20,17 @@ public:
     [[nodiscard]] Vector back() const;
     [[nodiscard]] Vector forward() const;
     [[nodiscard]] const Point& getPos() const;
-    [[nodiscard]] float getZmin() const;
+    [[nodiscard]] double getZmin() const;
     void setPos(const Point& pos);
     void move(Vector const& d);
-    void rotate(float theta, float phi, float psi);
+    void rotate(double theta, double phi, double psi);
 
 private:
     Point pos_;
     Vector forward_, up_;
-    float x_;
-    float y_;
-    float zmin_;
+    double x_;
+    double y_;
+    double zmin_;
 };
 
 

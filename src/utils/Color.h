@@ -14,10 +14,10 @@ struct Color {
     explicit Color(uint8_t r_ = 0, uint8_t g_ = 0, uint8_t b_ = 0) : r(r_), g(g_), b(b_) {}
 
     [[nodiscard]] Vector to_vect() const {
-        return Vector((float) r / 255, (float) g / 255, (float) b / 255);
+        return Vector((double) r / 255, (double) g / 255, (double) b / 255);
     }
 
-    static uint8_t color_clamp(float k) {
+    static uint8_t color_clamp(double k) {
         if (k < 0)
             return 0u;
         if (k > 255)

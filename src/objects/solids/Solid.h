@@ -9,13 +9,14 @@
 #include "../textures/TexMat.h"
 #include "../../utils/Line.h"
 
-constexpr float EPS = 1e-3;
+constexpr double EPS = 1e-3;
+constexpr double Inf = std::numeric_limits<double>::infinity();
 
 class Solid {
 public:
     explicit Solid(Point const& pos, TexMat& tex) : pos_(pos), tex_(tex) {}
 
-    virtual float intersects(Line const& line) const = 0;
+    virtual double intersects(Line const& line) const = 0;
     virtual Line get_normal(Point const& p) const = 0;
     virtual TexPixel get_tex(Point const& p) const = 0;
 

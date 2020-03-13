@@ -14,7 +14,7 @@ public:
                                                                                e2_(v0 - v2), norm_() {
         norm_ = -((v1 - v0) ^ (v2 - v0)).normalized();
     }
-    float intersects(const Line& line) const override;
+    double intersects(const Line& line) const override;
     Line get_normal(const Point& p) const override;
     TexPixel get_tex(const Point& p) const override;
 

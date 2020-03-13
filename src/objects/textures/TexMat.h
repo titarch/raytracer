@@ -9,7 +9,7 @@
 
 class TexMat {
 public:
-    virtual TexPixel get_tex(float x, float y) = 0;
+    virtual TexPixel get_tex(double x, double y) = 0;
 };
 
 #endif //RAYTRACER_TEXMAT_H

@@ -11,16 +11,16 @@
 
 namespace ray {
     struct Compare {
-        float val;
+        double val;
         int index;
     };
 
     Intersection cast_ray(std::vector<Solid*> const& solids, const Line& ray) {
-        float dists[solids.size()];
+        double dists[solids.size()];
 #pragma omp simd
         for (unsigned i = 0u; i < solids.size(); ++i)
             dists[i] = solids[i]->intersects(ray);
-        Compare min{INFINITY, -1};
+        Compare min{Inf, -1};
         for (auto k = 0u; k < solids.size(); ++k) {
             if (dists[k] < min.val) {
                 min.val = dists[k];
