@@ -195,17 +195,15 @@ void Scene::load(const char* path) {
     const auto solids = node["objects"]["solids"][0];
     for (const auto& solid : solids) {
         auto type = solid["type"].as<std::string>();
+        auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
+        auto* tex = tex_idx >=0 ? texs[tex_idx] : &default_tex;
         Solid* s = nullptr;
         if (type == "cylinder") {
-            auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
-            auto* tex = tex_idx >=0 ? texs[tex_idx] : &default_tex;
             auto base = solid["base"].as<Vector>();
             auto axis = solid["axis"].as<Vector>();
             auto radius = solid["radius"].as<double>();
             s = new Cylinder(base, *tex, axis, radius);
         } else if (type == "sphere") {
-            auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
-            auto* tex = tex_idx >=0 ? texs[tex_idx] : &default_tex;
             auto origin = solid["origin"].as<Vector>();
             auto radius = solid["radius"].as<double>();
             s = new Sphere(origin, *tex, radius);
