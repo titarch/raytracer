@@ -11,6 +11,7 @@
 #include "../objects/solids/Cylinder.h"
 #include "../objects/textures/UniTex.h"
 #include "../objects/solids/Sphere.h"
+#include "../objects/solids/Triangle.h"
 
 Scene::Scene(Camera& cam) : cam_(cam), solids_(), lights_() {
     w_ = cam.width();
@@ -176,14 +177,14 @@ void Scene::load(const char* path) {
     YAML::Node node = YAML::LoadFile(path);
 
 
-    const auto textures = node["textures"][0];
+    const auto textures = node["textures"];
     std::vector<TexMat*> texs;
     for (const auto& texture : textures) {
         TexMat* tex = nullptr;
         if (texture["type"].as<std::string>() == "uni") {
-            auto r = texture["r"].as<uint8_t>();
-            auto g = texture["g"].as<uint8_t>();
-            auto b = texture["b"].as<uint8_t>();
+            auto r = texture["r"].as<unsigned>();
+            auto g = texture["g"].as<unsigned>();
+            auto b = texture["b"].as<unsigned>();
             auto kd = texture["kd"].as<double>();
             auto ks = texture["ks"].as<double>();
             auto ns = texture["ns"].as<double>();
@@ -192,7 +193,7 @@ void Scene::load(const char* path) {
         texs.push_back(tex);
     }
 
-    const auto solids = node["objects"]["solids"][0];
+    const auto solids = node["objects"]["solids"];
     for (const auto& solid : solids) {
         auto type = solid["type"].as<std::string>();
         auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
@@ -207,6 +208,11 @@ void Scene::load(const char* path) {
             auto origin = solid["origin"].as<Vector>();
             auto radius = solid["radius"].as<double>();
             s = new Sphere(origin, *tex, radius);
+        } else if (type == "triangle") {
+            auto v0 = solid["v0"].as<Point>();
+            auto v1 = solid["v1"].as<Point>();
+            auto v2 = solid["v2"].as<Point>();
+            s = new Triangle(*tex, v0, v1, v2);
         }
         if (s == nullptr)
             throw std::invalid_argument(std::string("Unrcognized solid type: ") + type);
