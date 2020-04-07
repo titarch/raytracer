@@ -197,7 +197,7 @@ void Scene::load(const char* path) {
     for (const auto& solid : solids) {
         auto type = solid["type"].as<std::string>();
         auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
-        auto* tex = tex_idx >=0 ? texs[tex_idx] : &default_tex;
+        auto* tex = tex_idx >=0 ? texs[tex_idx % texs.size()] : &default_tex;
         Solid* s = nullptr;
         if (type == "cylinder") {
             auto base = solid["base"].as<Vector>();
