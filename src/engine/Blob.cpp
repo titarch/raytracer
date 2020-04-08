@@ -94,7 +94,7 @@ void Blob::add_triangles(Scene& s, texmat_ptr const& t) const {
         const Point& v1 = cube_edge(e1);
         const Point& v2 = cube_edge(e2);
 
-        s.add_solid(std::make_unique<MetaTriangle>(t, v0, v1, v2, *this, pf_linear_grad));
+        s.emplace_solid<MetaTriangle>(t, v0, v1, v2, *this, pf_linear_grad);
     }
 
 }

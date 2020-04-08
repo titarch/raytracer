@@ -28,14 +28,6 @@ void Scene::update_view() {
     tl_ = center_ + (w_ / 2) * cam_.left() + (h_ / 2) * cam_.up();
 }
 
-void Scene::add_solid(solid_ptr s) {
-    solids_.push_back(std::move(s));
-}
-
-void Scene::add_light(light_ptr l) {
-    lights_.push_back(std::move(l));
-}
-
 Intersection Scene::cast_ray(const Line& ray) {
     return ray::cast_ray(solids_, ray);
 }
@@ -216,6 +208,6 @@ void Scene::load(const char* path) {
         }
         if (!s)
             throw std::invalid_argument(std::string("Unrecognized solid type: ") + type);
-        add_solid(std::move(s));
+        solids_.push_back(std::move(s));
     }
 }
