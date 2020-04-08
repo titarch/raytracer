@@ -19,7 +19,7 @@ public:
     Scene(Camera& cam);
     void update_view();
     void add_solid(solid_ptr s);
-    void add_light(Light *l);
+    void add_light(light_ptr l);
     Intersection cast_ray(Line const& ray);
     Vector get_light_value(Intersection const& its, Line const& ray, int rec_lvl = 0);
     Image render(unsigned width, unsigned height);
@@ -28,7 +28,7 @@ public:
 protected:
     Camera& cam_;
     solids solids_;
-    std::vector<Light *> lights_;
+    lights lights_;
     double w_;
     double h_;
     Point center_, tl_;

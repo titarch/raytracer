@@ -37,7 +37,7 @@ int main() {
 //    scene.add_solid(&tri);
 
     PointLight light(Vector::back() * 2 + Vector::left() * 10 + Vector::up() * 2);
-    scene.add_light(&light);
+    scene.add_light(std::make_unique<PointLight>(light));
 //    PointLight light2(Vector::back() * 2 + Vector::right() * 10 + Vector::up() *  2);
 //    scene.add_light(&light2);
 //    Image img = scene.render(1000, 1000);

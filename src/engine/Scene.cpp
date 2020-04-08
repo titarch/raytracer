@@ -32,8 +32,8 @@ void Scene::add_solid(solid_ptr s) {
     solids_.push_back(std::move(s));
 }
 
-void Scene::add_light(Light* l) {
-    lights_.push_back(l);
+void Scene::add_light(light_ptr l) {
+    lights_.push_back(std::move(l));
 }
 
 Intersection Scene::cast_ray(const Line& ray) {
@@ -49,7 +49,7 @@ Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_
     Line const& norm = its.s->get_normal(p);
     Vector reflection = ray.d - 2 * (ray.d * norm.d) * norm.d;
     Vector lum = tp.ka.to_vect() * 0.1;
-    for (auto l : lights_) {
+    for (auto const& l : lights_) {
         Vector l_dir = (l->pos() - p).normalized();
         Intersection const& lits = cast_ray({p, l_dir});
         if (lits.d != -1 && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
