@@ -8,10 +8,10 @@
 #include "Solid.h"
 
 struct Intersection {
-    Intersection(double d_, Solid *s_) : d(d_), s(s_) {}
+    Intersection(double d_, const solid_ptr& s_) : d(d_), s(s_) {}
 
     double d;
-    Solid *s;
+    const solid_ptr& s;
 };
 
 #endif //RAYTRACER_TYPES_H

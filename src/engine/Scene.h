@@ -18,7 +18,7 @@ class Scene {
 public:
     Scene(Camera& cam);
     void update_view();
-    void add_solid(Solid *s);
+    void add_solid(solid_ptr s);
     void add_light(Light *l);
     Intersection cast_ray(Line const& ray);
     Vector get_light_value(Intersection const& its, Line const& ray, int rec_lvl = 0);
@@ -27,7 +27,7 @@ public:
     void load(const char* path);
 protected:
     Camera& cam_;
-    std::vector<Solid *> solids_;
+    solids solids_;
     std::vector<Light *> lights_;
     double w_;
     double h_;

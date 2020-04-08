@@ -5,6 +5,8 @@
 #ifndef RAYTRACER_SOLID_H
 #define RAYTRACER_SOLID_H
 
+#include <memory>
+#include <vector>
 #include "../textures/TexPixel.h"
 #include "../textures/TexMat.h"
 #include "../../utils/Line.h"
@@ -24,5 +26,8 @@ protected:
     Point pos_;
     TexMat& tex_;
 };
+
+using solid_ptr = std::unique_ptr<Solid>;
+using solids = std::vector<solid_ptr>;
 
 #endif //RAYTRACER_SOLID_H

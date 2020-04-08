@@ -28,8 +28,8 @@ void Scene::update_view() {
     tl_ = center_ + (w_ / 2) * cam_.left() + (h_ / 2) * cam_.up();
 }
 
-void Scene::add_solid(Solid* s) {
-    solids_.push_back(s);
+void Scene::add_solid(solid_ptr s) {
+    solids_.push_back(std::move(s));
 }
 
 void Scene::add_light(Light* l) {
@@ -41,7 +41,7 @@ Intersection Scene::cast_ray(const Line& ray) {
 }
 
 Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_lvl) {
-    if (its.s == nullptr)
+    if (its.d == -1)
         return Vector::zero();
 
     Point p = ray.o + ray.d * its.d;
@@ -198,24 +198,24 @@ void Scene::load(const char* path) {
         auto type = solid["type"].as<std::string>();
         auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
         auto* tex = tex_idx >=0 ? texs[tex_idx % texs.size()] : &default_tex;
-        Solid* s = nullptr;
+        solid_ptr s;
         if (type == "cylinder") {
             auto base = solid["base"].as<Vector>();
             auto axis = solid["axis"].as<Vector>();
             auto radius = solid["radius"].as<double>();
-            s = new Cylinder(base, *tex, axis, radius);
+            s = std::make_unique<Cylinder>(base, *tex, axis, radius);
         } else if (type == "sphere") {
             auto origin = solid["origin"].as<Vector>();
             auto radius = solid["radius"].as<double>();
-            s = new Sphere(origin, *tex, radius);
+            s = std::make_unique<Sphere>(origin, *tex, radius);
         } else if (type == "triangle") {
             auto v0 = solid["v0"].as<Point>();
             auto v1 = solid["v1"].as<Point>();
             auto v2 = solid["v2"].as<Point>();
-            s = new Triangle(*tex, v0, v1, v2);
+            s = std::make_unique<Triangle>(*tex, v0, v1, v2);
         }
-        if (s == nullptr)
-            throw std::invalid_argument(std::string("Unrcognized solid type: ") + type);
-        add_solid(s);
+        if (!s)
+            throw std::invalid_argument(std::string("Unrecognized solid type: ") + type);
+        add_solid(std::move(s));
     }
 }
