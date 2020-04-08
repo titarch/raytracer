@@ -52,7 +52,7 @@ Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_
     for (auto l : lights_) {
         Vector l_dir = (l->pos() - p).normalized();
         Intersection const& lits = cast_ray({p, l_dir});
-        if (lits.s != nullptr && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
+        if (lits.d != -1 && lits.d * lits.d < (l->pos() - p).sqrMagnitude())
             continue;
         Vector local_lum = tp.kd * tp.ka.to_vect() * std::clamp(norm.d * l_dir, 0.0, Inf) +
                            tp.ks * Vector::one() * std::pow(std::clamp(reflection * l_dir, 0.0, Inf), tp.ns);
