@@ -19,5 +19,5 @@ Line Plane::get_normal(const Point& p) const {
 }
 
 TexPixel Plane::get_tex(const Point& p) const {
-    return tex_.get_tex(p.x(), p.y());
+    return tex_->get_tex(p.x(), p.y());
 }

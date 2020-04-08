@@ -81,7 +81,7 @@ uint8_t Blob::get_index() const {
     return index;
 }
 
-void Blob::add_triangles(Scene& s, TexMat& t) const {
+void Blob::add_triangles(Scene& s, texmat_ptr const& t) const {
     const auto *tc = cube_tri_conf[get_index()];
 
     for (auto i = 0u; i < 15u; i += 3u) {
@@ -99,7 +99,7 @@ void Blob::add_triangles(Scene& s, TexMat& t) const {
 
 }
 
-void Blob::render(Scene& scene, TexMat& tex) {
+void Blob::render(Scene& scene, texmat_ptr const& tex) {
     for (auto i = 0u; i < nb_cubes_; ++i) {
         for (auto j = 0u; j < nb_cubes_; ++j) {
             for (auto k = 0u; k < nb_cubes_; ++k) {

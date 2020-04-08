@@ -11,19 +11,20 @@
 
 int main() {
     Camera cam(Point::back() * 7, Vector::forward(), Vector::up(), M_PI / 2, atanf(16.f / 9), 0.05);
+//    Camera cam(Point::forward() * 30 + Point::up() * 60 + Point::left() * 15, Vector::down(), Vector::right(), M_PI / 2, atanf(16.f / 9), 0.05);
 //    cam.rotate(0, -M_PI / 2 + 0.4, 0);
     Scene scene(cam);
-    UniTex tex(Color(255, 0, 200), 0.5, 0.5, 5);
+    auto tex = std::make_shared<UniTex>(Color(255, 0, 200), 0.5, 0.5, 5);
     Sphere sph(Point::forward(), tex, 1);
-    UniTex tex2(Color(0, 255, 200), 0.5, 0.5, 4);
+    auto tex2 = std::make_shared<UniTex>(Color(0, 255, 200), 0.5, 0.5, 4);
     Sphere sph2(Point::left() + Point::back() * 2, tex2, 0.7);
-    UniTex tex3(Color(255, 200, 20), 0.5, 0.5, 3);
+    auto tex3 = std::make_shared<UniTex>(Color(255, 200, 20), 0.5, 0.5, 3);
     Sphere sph3(Point::left() * 2.2 + Point::back() * 2.3 + Point::up() * 0.2, tex3, 0.3);
     scene.add_solid(std::make_unique<Sphere>(sph));
     scene.add_solid(std::make_unique<Sphere>(sph2));
     scene.add_solid(std::make_unique<Sphere>(sph3));
 
-    UniTex tex4(Color(0, 32, 255), 1, 0.1, 1);
+    auto tex4 = std::make_shared<UniTex>(Color(0, 32, 255), 1, 0.1, 1);
     Plane plane(Point::down() * 2, tex4, Vector::up());
     Plane plane2(Point::up() * 4, tex4, Vector::down());
     scene.add_solid(std::make_unique<Plane>(plane));

@@ -26,5 +26,5 @@ Line Triangle::get_normal(const Point& p) const {
 }
 
 TexPixel Triangle::get_tex(const Point& p) const {
-    return tex_.get_tex(p.x(), p.y());
+    return tex_->get_tex(p.x(), p.y());
 }

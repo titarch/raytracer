@@ -12,8 +12,8 @@
 
 class Wrapper : public Solid {
 public:
-    Wrapper(const Point& pos, TexMat& tex, solids solids) : Solid(pos, tex), solids_(std::move(solids)),
-                                                            last_solid_(nullptr) {}
+    Wrapper(const Point& pos, texmat_ptr const& tex, solids solids) : Solid(pos, tex), solids_(std::move(solids)),
+                                                                      last_solid_(nullptr) {}
 
     double intersects(const Line& line) const override;
     Line get_normal(const Point& p) const override;

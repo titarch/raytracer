@@ -16,7 +16,7 @@ constexpr double Inf = std::numeric_limits<double>::infinity();
 
 class Solid {
 public:
-    explicit Solid(Point const& pos, TexMat& tex) : pos_(pos), tex_(tex) {}
+    explicit Solid(Point const& pos, texmat_ptr const& tex) : pos_(pos), tex_(tex) {}
 
     virtual double intersects(Line const& line) const = 0;
     virtual Line get_normal(Point const& p) const = 0;
@@ -24,7 +24,7 @@ public:
 
 protected:
     Point pos_;
-    TexMat& tex_;
+    texmat_ptr tex_;
 };
 
 using solid_ptr = std::unique_ptr<Solid>;

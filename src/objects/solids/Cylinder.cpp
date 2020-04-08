@@ -52,7 +52,7 @@ Line Cylinder::get_normal(const Point& p) const {
 }
 
 TexPixel Cylinder::get_tex(const Point& p) const {
-    return tex_.get_tex(p.x(), p.y());
+    return tex_->get_tex(p.x(), p.y());
 }
 
 double Cylinder::intersects_base(const Line& line, bool bottom) const {

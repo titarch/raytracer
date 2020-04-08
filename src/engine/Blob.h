@@ -38,7 +38,7 @@ public:
         nb_cubes_ = (unsigned) (sc.d / step);
     }
 
-    void render(Scene& s, TexMat& tex);
+    void render(Scene& s, texmat_ptr const& tex);
     static double pf_linear(Point const& p, Blob const& b);
     static Vector pf_linear_grad(Point const& p, Blob const& b);
     static double pf_square(Point const& p, Blob const& b);
@@ -56,7 +56,7 @@ private:
     [[nodiscard]] Point cube_edge(uint8_t edge) const;
     [[nodiscard]] double potential(uint8_t corner) const;
     [[nodiscard]] uint8_t get_index() const;
-    void add_triangles(Scene& s, TexMat& t) const;
+    void add_triangles(Scene& s, texmat_ptr const& t) const;
 };
 
 

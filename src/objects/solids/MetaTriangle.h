@@ -13,8 +13,9 @@
 
 class MetaTriangle : public Triangle {
 public:
-    MetaTriangle(TexMat& tex, const Point& v0, const Point& v1, const Point& v2,
-                 const Blob& blob, potential_grad grad) : Triangle(tex, v0, v1, v2), blob_(blob), grad_(std::move(grad)) {}
+    MetaTriangle(texmat_ptr const& tex, const Point& v0, const Point& v1, const Point& v2,
+                 const Blob& blob, potential_grad grad) : Triangle(tex, v0, v1, v2), blob_(blob),
+                                                          grad_(std::move(grad)) {}
 
     Line get_normal(const Point& p) const override;
 protected:

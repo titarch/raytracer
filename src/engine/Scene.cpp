@@ -173,14 +173,14 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
 }
 
 void Scene::load(const char* path) {
-    static UniTex default_tex(Color(255, 255, 255), 0.5, 0.5, 5);
+    static texmat_ptr default_tex = std::make_shared<UniTex>(Color(255, 255, 255), 0.5, 0.5, 5);
     YAML::Node node = YAML::LoadFile(path);
 
 
     const auto textures = node["textures"];
-    std::vector<TexMat*> texs;
+    texmats texs;
     for (const auto& texture : textures) {
-        TexMat* tex = nullptr;
+        texmat_ptr tex;
         if (texture["type"].as<std::string>() == "uni") {
             auto r = texture["r"].as<unsigned>();
             auto g = texture["g"].as<unsigned>();
@@ -188,31 +188,31 @@ void Scene::load(const char* path) {
             auto kd = texture["kd"].as<double>();
             auto ks = texture["ks"].as<double>();
             auto ns = texture["ns"].as<double>();
-            tex = new UniTex(Color(r, g, b), kd, ks, ns);
+            tex = std::make_shared<UniTex>(Color(r, g, b), kd, ks, ns);
         }
-        texs.push_back(tex);
+        texs.push_back(std::move(tex));
     }
 
     const auto solids = node["objects"]["solids"];
     for (const auto& solid : solids) {
         auto type = solid["type"].as<std::string>();
         auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
-        auto* tex = tex_idx >=0 ? texs[tex_idx % texs.size()] : &default_tex;
+        auto tex = tex_idx >=0 ? texs[tex_idx % texs.size()] : default_tex;
         solid_ptr s;
         if (type == "cylinder") {
             auto base = solid["base"].as<Vector>();
             auto axis = solid["axis"].as<Vector>();
             auto radius = solid["radius"].as<double>();
-            s = std::make_unique<Cylinder>(base, *tex, axis, radius);
+            s = std::make_unique<Cylinder>(base, tex, axis, radius);
         } else if (type == "sphere") {
             auto origin = solid["origin"].as<Vector>();
             auto radius = solid["radius"].as<double>();
-            s = std::make_unique<Sphere>(origin, *tex, radius);
+            s = std::make_unique<Sphere>(origin, tex, radius);
         } else if (type == "triangle") {
             auto v0 = solid["v0"].as<Point>();
             auto v1 = solid["v1"].as<Point>();
             auto v2 = solid["v2"].as<Point>();
-            s = std::make_unique<Triangle>(*tex, v0, v1, v2);
+            s = std::make_unique<Triangle>(tex, v0, v1, v2);
         }
         if (!s)
             throw std::invalid_argument(std::string("Unrecognized solid type: ") + type);
