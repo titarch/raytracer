@@ -25,7 +25,7 @@ public:
     void load(const char* path);
 
     template<typename S, typename ...Args>
-    Scene& emplace_solid(Args... args) {
+    Scene& emplace_solid(Args&&... args) {
         solids_.push_back(std::make_unique<S>(args...));
         return *this;
     }
@@ -37,7 +37,7 @@ public:
     }
 
     template<typename L, typename ...Args>
-    Scene& emplace_light(Args... args) {
+    Scene& emplace_light(Args&&... args) {
         lights_.push_back(std::make_unique<L>(args...));
         return *this;
     }
