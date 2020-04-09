@@ -7,6 +7,7 @@
 
 
 #include "../utils/Point.h"
+#include <memory>
 
 class Camera {
 public:
@@ -33,5 +34,6 @@ private:
     double zmin_;
 };
 
+using camera_ptr = std::unique_ptr<Camera>;
 
 #endif //RAYTRACER_CAMERA_H

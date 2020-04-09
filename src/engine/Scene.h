@@ -16,13 +16,13 @@
 
 class Scene {
 public:
-    Scene(Camera& cam);
+    explicit Scene(camera_ptr cam);
     void update_view();
     Intersection cast_ray(Line const& ray);
     Vector get_light_value(Intersection const& its, Line const& ray, int rec_lvl = 0);
     Image render(unsigned width, unsigned height);
     void render_rt(unsigned int width, unsigned int height);
-    void load(const char* path);
+    static Scene load(std::string const& path);
 
     template<typename S, typename ...Args>
     Scene& emplace_solid(Args&&... args) {
@@ -49,7 +49,7 @@ public:
     }
 
 protected:
-    Camera& cam_;
+    camera_ptr cam_;
     solids solids_;
     lights lights_;
     double w_;

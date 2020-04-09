@@ -14,7 +14,7 @@ int main() {
 //    Camera cam(Point::forward() * 30 + Point::up() * 60 + Point::left() * 15, Vector::down(), Vector::right(), M_PI / 2, atanf(16.f / 9), 0.05);
 //    cam.rotate(0, -M_PI / 2 + 0.4, 0);
 
-    Scene scene(cam);
+    Scene scene(std::make_unique<Camera>(cam));
     auto tex = std::make_shared<UniTex>(Color(255, 0, 200), 0.5, 0.5, 5);
     auto tex2 = std::make_shared<UniTex>(Color(0, 255, 200), 0.5, 0.5, 4);
     auto tex3 = std::make_shared<UniTex>(Color(255, 200, 20), 0.5, 0.5, 3);

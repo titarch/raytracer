@@ -13,19 +13,19 @@
 #include "../objects/solids/Sphere.h"
 #include "../objects/solids/Triangle.h"
 
-Scene::Scene(Camera& cam) : cam_(cam), solids_(), lights_() {
-    w_ = cam.width();
-    h_ = cam.height();
+Scene::Scene(camera_ptr cam) : cam_(std::move(cam)), solids_(), lights_() {
+    w_ = cam_->width();
+    h_ = cam_->height();
     update_view();
 }
 
 void Scene::update_view() {
-    double zmin = cam_.getZmin();
-    const Point& pos = cam_.getPos();
-    const Vector& fw = cam_.forward();
+    double zmin = cam_->getZmin();
+    const Point& pos = cam_->getPos();
+    const Vector& fw = cam_->forward();
 
     center_ = pos + fw * zmin;
-    tl_ = center_ + (w_ / 2) * cam_.left() + (h_ / 2) * cam_.up();
+    tl_ = center_ + (w_ / 2) * cam_->left() + (h_ / 2) * cam_->up();
 }
 
 Intersection Scene::cast_ray(const Line& ray) {
@@ -67,8 +67,8 @@ Image Scene::render(unsigned int width, unsigned int height) {
     for (i = 0u; i < height; ++i) {
         for (j = 0u; j < width; ++j) {
             Point z_target =
-                    tl_ + ((double) i * h_ / height) * cam_.down() + ((double) j * w_ / width) * cam_.right();
-            Vector ray_dir = (z_target - cam_.getPos()).normalized();
+                    tl_ + ((double) i * h_ / height) * cam_->down() + ((double) j * w_ / width) * cam_->right();
+            Vector ray_dir = (z_target - cam_->getPos()).normalized();
             Line ray = {z_target, ray_dir};
             Intersection its = cast_ray(ray);
 
@@ -95,34 +95,34 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
             if (event.type == sf::Event::KeyPressed) {
                 switch (event.key.code) {
                     case sf::Keyboard::W :
-                        cam_.move(cam_.forward());
+                        cam_->move(cam_->forward());
                         break;
                     case sf::Keyboard::A :
-                        cam_.move(cam_.left());
+                        cam_->move(cam_->left());
                         break;
                     case sf::Keyboard::S :
-                        cam_.move(cam_.back());
+                        cam_->move(cam_->back());
                         break;
                     case sf::Keyboard::D :
-                        cam_.move(cam_.right());
+                        cam_->move(cam_->right());
                         break;
                     case sf::Keyboard::LShift:
-                        cam_.move(cam_.up());
+                        cam_->move(cam_->up());
                         break;
                     case sf::Keyboard::LControl:
-                        cam_.move(cam_.down());
+                        cam_->move(cam_->down());
                         break;
                     case sf::Keyboard::I :
-                        cam_.rotate(0, -.1, 0);
+                        cam_->rotate(0, -.1, 0);
                         break;
                     case sf::Keyboard::J :
-                        cam_.rotate(-.1, 0, 0);
+                        cam_->rotate(-.1, 0, 0);
                         break;
                     case sf::Keyboard::K :
-                        cam_.rotate(0, .1, 0);
+                        cam_->rotate(0, .1, 0);
                         break;
                     case sf::Keyboard::L :
-                        cam_.rotate(.1, 0, 0);
+                        cam_->rotate(.1, 0, 0);
                         break;
                     default:
                         break;
@@ -139,8 +139,8 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
         for (i = 0u; i < height; ++i) {
             for (j = 0u; j < width; ++j) {
                 Point z_target =
-                        tl_ + ((double) i * h_ / height) * cam_.down() + ((double) j * w_ / width) * cam_.right();
-                Vector ray_dir = (z_target - cam_.getPos()).normalized();
+                        tl_ + ((double) i * h_ / height) * cam_->down() + ((double) j * w_ / width) * cam_->right();
+                Vector ray_dir = (z_target - cam_->getPos()).normalized();
                 Line ray = {z_target, ray_dir};
                 Intersection const& its = cast_ray(ray);
 
@@ -164,12 +164,25 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
     delete[] pixels;
 }
 
-void Scene::load(const char* path) {
+Scene Scene::load(const std::string& path) {
     static texmat_ptr default_tex = std::make_shared<UniTex>(Color(255, 255, 255), 0.5, 0.5, 5);
     YAML::Node node = YAML::LoadFile(path);
 
+    camera_ptr cam;
+    if (node["camera"]) {
+        const auto& camera = node["camera"];
+        auto origin = camera["origin"].as<Vector>();
+        auto target = camera["target"].as<Vector>();
+        auto up = camera["up"].as<Vector>();
+        auto x = camera["x"] ? camera["x"].as<double>() : M_PI / 2;
+        auto y = camera["y"] ? camera["y"].as<double>() : atanf(16.f / 9);
+        auto zmin = camera["zmin"] ? camera["zmin"].as<double>() : 0.05;
+        cam = std::make_unique<Camera>(origin, target, up, x, y, zmin);
+    } else
+        cam = std::make_unique<Camera>(Point::back() * 7, Point::zero(), Point::up(), M_PI / 2, atanf(16.f / 9), 0.05);
 
-    const auto textures = node["textures"];
+    Scene scene(std::move(cam));
+    const auto& textures = node["textures"];
     texmats texs;
     for (const auto& texture : textures) {
         texmat_ptr tex;
@@ -185,11 +198,11 @@ void Scene::load(const char* path) {
         texs.push_back(std::move(tex));
     }
 
-    const auto solids = node["objects"]["solids"];
+    const auto& solids = node["objects"]["solids"];
     for (const auto& solid : solids) {
         auto type = solid["type"].as<std::string>();
         auto tex_idx = solid["tex"] ? solid["tex"].as<int>() : -1;
-        auto tex = tex_idx >=0 ? texs[tex_idx % texs.size()] : default_tex;
+        auto tex = tex_idx >= 0 ? texs[tex_idx % texs.size()] : default_tex;
         solid_ptr s;
         if (type == "cylinder") {
             auto base = solid["base"].as<Vector>();
@@ -208,6 +221,9 @@ void Scene::load(const char* path) {
         }
         if (!s)
             throw std::invalid_argument(std::string("Unrecognized solid type: ") + type);
-        solids_.push_back(std::move(s));
+        scene.solids_.push_back(std::move(s));
     }
+
+    return scene;
 }
+
