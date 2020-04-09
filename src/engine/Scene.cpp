@@ -86,7 +86,7 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
     sf::Image img;
     sf::Texture stex;
     sf::Sprite sprite;
-    double dangle = M_PI / 180;
+    double dangle = M_PI / 90;
 
     while (window.isOpen()) {
         sf::Event event{};
@@ -108,10 +108,10 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
                     case sf::Keyboard::D :
                         cam_->move(cam_->right());
                         break;
-                    case sf::Keyboard::LShift:
+                    case sf::Keyboard::Z:
                         cam_->move(cam_->up());
                         break;
-                    case sf::Keyboard::LControl:
+                    case sf::Keyboard::X:
                         cam_->move(cam_->down());
                         break;
                     case sf::Keyboard::I :
@@ -126,6 +126,11 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
                     case sf::Keyboard::L :
                         cam_->rotate(Mat3f::R(cam_->up(), dangle));
                         break;
+                    case sf::Keyboard::U:
+                        cam_->rotate(Mat3f::R(cam_->forward(), dangle));
+                        break;
+                    case sf::Keyboard::O:
+                        cam_->rotate(Mat3f::R(cam_->forward(), -dangle));
                     default:
                         break;
                 }
