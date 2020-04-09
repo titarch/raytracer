@@ -172,14 +172,14 @@ Scene Scene::load(const std::string& path) {
     if (node["camera"]) {
         const auto& camera = node["camera"];
         auto origin = camera["origin"].as<Vector>();
-        auto target = camera["target"].as<Vector>();
+        auto forward = camera["forward"].as<Vector>();
         auto up = camera["up"].as<Vector>();
         auto x = camera["x"] ? camera["x"].as<double>() : M_PI / 2;
         auto y = camera["y"] ? camera["y"].as<double>() : atanf(16.f / 9);
         auto zmin = camera["zmin"] ? camera["zmin"].as<double>() : 0.05;
-        cam = std::make_unique<Camera>(origin, target, up, x, y, zmin);
+        cam = std::make_unique<Camera>(origin, forward, up, x, y, zmin);
     } else
-        cam = std::make_unique<Camera>(Point::back() * 7, Point::zero(), Point::up(), M_PI / 2, atanf(16.f / 9), 0.05);
+        cam = std::make_unique<Camera>(Point::back() * 7, Point::forward(), Point::up(), M_PI / 2, atanf(16.f / 9), 0.05);
 
     Scene scene(std::move(cam));
     const auto& textures = node["textures"];
