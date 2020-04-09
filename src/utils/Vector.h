@@ -85,13 +85,6 @@ public:
         return *this;
     }
 
-    Vector& operator%=(Vector const& rhs) {
-        x_ *= rhs.x_;
-        y_ *= rhs.y_;
-        z_ *= rhs.z_;
-        return *this;
-    }
-
     Vector& operator%=(double k) {
         x_ = std::pow(x_, k);
         y_ = std::pow(y_, k);
@@ -111,6 +104,10 @@ public:
 
     friend inline double operator*(Vector const& lhs, Vector const& rhs) {
         return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_ + lhs.z_ * rhs.z_;
+    }
+
+    friend inline double operator%(Vector const& lhs, Vector const& rhs) {
+        return acos(lhs.normalized() * rhs.normalized());
     }
 
     friend std::ostream& operator<<(std::ostream& os, Vector const& v) {
@@ -186,16 +183,6 @@ inline Vector operator*(double lhs, Vector rhs) {
 
 inline Vector operator/(Vector lhs, double rhs) {
     lhs /= rhs;
-    return lhs;
-}
-
-inline Vector operator%(Vector lhs, Vector const& rhs) {
-    lhs %= rhs;
-    return lhs;
-}
-
-inline Vector operator%(Vector lhs, double rhs) {
-    lhs %= rhs;
     return lhs;
 }
 

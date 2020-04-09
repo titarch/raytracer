@@ -19,6 +19,7 @@ public:
     explicit Scene(camera_ptr cam);
     void update_view();
     Intersection cast_ray(Line const& ray);
+    Vector refract_ray(Intersection const& its, Line const& ray);
     Vector get_light_value(Intersection const& its, Line const& ray, int rec_lvl = 0);
     Image render(unsigned width, unsigned height);
     void render_rt(unsigned int width, unsigned int height);

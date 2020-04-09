@@ -16,7 +16,7 @@ namespace ray {
     };
 
     Intersection cast_ray(solids const& solids, const Line& ray) {
-        double dists[solids.size()];
+        auto dists = new double[solids.size()];
 #pragma omp simd
         for (unsigned i = 0u; i < solids.size(); ++i)
             dists[i] = solids[i]->intersects(ray);
@@ -27,6 +27,7 @@ namespace ray {
                 min.index = k;
             }
         }
+        delete[] dists;
         if (min.index == -1)
             return Intersection{-1, nullptr};
         return Intersection{min.val, solids[min.index]};

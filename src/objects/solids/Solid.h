@@ -10,6 +10,7 @@
 #include "../textures/TexPixel.h"
 #include "../textures/TexMat.h"
 #include "../../utils/Line.h"
+#include "../textures/TransTex.h"
 
 constexpr double EPS = 1e-3;
 constexpr double Inf = std::numeric_limits<double>::infinity();
@@ -22,8 +23,11 @@ public:
     virtual Line get_normal(Point const& p) const = 0;
     virtual TexPixel get_tex(Point const& p) const = 0;
 
+    bool transparent() const { return dynamic_cast<TransTex*>(tex_.get()) != nullptr; }
+
 protected:
     Point pos_;
+public:
     texmat_ptr tex_;
 };
 
