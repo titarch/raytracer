@@ -12,6 +12,7 @@
 #include "../objects/textures/UniTex.h"
 #include "../objects/solids/Sphere.h"
 #include "../objects/solids/Triangle.h"
+#include "../objects/lights/PointLight.h"
 
 Scene::Scene(camera_ptr cam) : cam_(std::move(cam)), solids_(), lights_() {
     w_ = cam_->width();
@@ -222,6 +223,21 @@ Scene Scene::load(const std::string& path) {
         if (!s)
             throw std::invalid_argument(std::string("Unrecognized solid type: ") + type);
         scene.solids_.push_back(std::move(s));
+    }
+
+    if (node["objects"]["lights"]) {
+        const auto& lights = node["objects"]["lights"];
+        for (const auto& light : lights) {
+            auto type = light["type"].as<std::string>();
+            light_ptr l;
+            if (type == "point") {
+                auto origin = light["origin"].as<Point>();
+                l = std::make_unique<PointLight>(origin);
+            }
+            if (!l)
+                throw std::invalid_argument(std::string("Unrecognized light type: ") + type);
+            scene.lights_.push_back(std::move(l));
+        }
     }
 
     return scene;
