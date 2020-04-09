@@ -27,6 +27,32 @@ public:
         return copy;
     }
 
+    double& operator[](size_t idx) {
+        switch (idx) {
+            case 0:
+                return x_;
+            case 1:
+                return y_;
+            case 2:
+                return z_;
+            default:
+                throw std::out_of_range("Valid indices for Vector are 0, 1 or 2");
+        }
+    }
+
+    double operator[](size_t idx) const {
+        switch (idx) {
+            case 0:
+                return x_;
+            case 1:
+                return y_;
+            case 2:
+                return z_;
+            default:
+                throw std::out_of_range("Valid indices for Vector are 0, 1 or 2");
+        }
+    }
+
     Vector& operator+=(Vector const& rhs) {
         x_ += rhs.x_;
         y_ += rhs.y_;

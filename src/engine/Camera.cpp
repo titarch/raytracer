@@ -3,7 +3,6 @@
 //
 
 #include "Camera.h"
-
 #include <cmath>
 
 Camera::Camera(const Point& pos, const Vector& forward, const Vector& up,
@@ -33,23 +32,9 @@ void Camera::move(const Vector& d) {
     pos_ += d * 0.1;
 }
 
-void Camera::rotate(double theta, double phi, double psi) {
-    (void) psi;
-    if (std::fabs(theta) > 0) {
-        double x = forward_.x() * cosf(theta) + forward_.z() * sinf(theta);
-        double z = forward_.z() * cosf(theta) - forward_.x() * sinf(theta);
-        forward_ = Vector{x, forward_.y(), z}.normalized();
-    }
-
-    if (std::fabs(phi) > 0) {
-        double y = up_.y() * cosf(phi) - up_.z() * sinf(phi);
-        double z = up_.y() * sinf(phi) + up_.z() * cosf(phi);
-        up_ = Vector{up_.x(), y, z}.normalized();
-
-        y = -up_.z();
-        z = up_.y();
-        forward_ = Vector{forward_.x(), y, z}.normalized();
-    }
+void Camera::rotate(Mat3f const& mat) {
+    up_ = mat * up_;
+    forward_ = mat * forward_;
 }
 
 Vector Camera::left() const {

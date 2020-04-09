@@ -7,6 +7,7 @@
 
 
 #include "../utils/Point.h"
+#include "../utils/Matrix.h"
 #include <memory>
 
 class Camera {
@@ -24,7 +25,7 @@ public:
     [[nodiscard]] double getZmin() const;
     void setPos(const Point& pos);
     void move(Vector const& d);
-    void rotate(double theta, double phi, double psi);
+    void rotate(Mat3f const& mat);
 
 private:
     Point pos_;

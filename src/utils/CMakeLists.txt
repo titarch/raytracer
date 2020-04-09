@@ -1,5 +1,6 @@
 set(utils_src_files
         Vector.h
+        Matrix.h
         Point.h
         Line.h
         Color.h)
