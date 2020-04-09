@@ -33,7 +33,7 @@ Intersection Scene::cast_ray(const Line& ray) {
     return ray::cast_ray(solids_, ray);
 }
 
-Vector Scene::refract_ray(Intersection const& its, Line const& ray) {
+Vector Scene::refract_ray(Intersection const& its, Line const& ray, int rec_lvl) {
     Point p = ray.o + ray.d * its.d;
     Line norm = its.s->get_normal(p);
     auto tex = dynamic_cast<TransTex*>(its.s->tex_.get());
@@ -44,7 +44,7 @@ Vector Scene::refract_ray(Intersection const& its, Line const& ray) {
     auto refracted = (ray.d * n - norm.d * (-cosi + n * cosi));
     Line refract_ray{p, refracted};
     auto rits = cast_ray(refract_ray);
-    return get_light_value(rits, refract_ray);
+    return get_light_value(rits, refract_ray, rec_lvl);
 }
 
 Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_lvl) {
@@ -52,7 +52,7 @@ Vector Scene::get_light_value(Intersection const& its, Line const& ray, int rec_
         return Vector::zero();
 
     if (its.s->transparent()) {
-        return refract_ray(its, ray);
+        return refract_ray(its, ray, rec_lvl);
     }
 
     Point p = ray.o + ray.d * its.d;
