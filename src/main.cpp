@@ -1,50 +1,64 @@
 #include <iostream>
+#include <boost/program_options.hpp>
 #include "utils/Vector.h"
-#include "engine/Camera.h"
 #include "engine/Scene.h"
-#include "objects/textures/UniTex.h"
-#include "objects/solids/Sphere.h"
-#include "objects/solids/Plane.h"
 #include "objects/lights/PointLight.h"
-#include "engine/Blob.h"
-#include "objects/solids/Cylinder.h"
-#include "objects/textures/TransTex.h"
 
-int main() {
-    Camera cam(Point::back() * 7, Vector::forward(), Vector::up(), M_PI / 2, atanf(16.f / 9), 0.05);
-//    Camera cam(Point::forward() * 30 + Point::up() * 60 + Point::left() * 15, Vector::down(), Vector::right(), M_PI / 2, atanf(16.f / 9), 0.05);
-//    cam.rotate(0, -M_PI / 2 + 0.4, 0);
+namespace po = boost::program_options;
 
-    Scene scene(std::make_unique<Camera>(cam));
-    auto tex = std::make_shared<UniTex>(Color(255, 0, 200), 0.5, 0.5, 5);
-    auto tex2 = std::make_shared<TransTex>(1.3);
-    auto tex3 = std::make_shared<UniTex>(Color(255, 200, 20), 0.5, 0.5, 3);
-    auto tex4 = std::make_shared<UniTex>(Color(0, 32, 255), 1, 0.1, 1);
+int main(int argc, char* argv[]) {
+    unsigned width, height;
 
-    Sphere sph(Point::forward() * 50, tex, 1);
-    Sphere sph2(Point::back() * 2, tex2, 0.7);
-    Sphere sph3(Point::left() * 2.2 + Point::back() * 2.3 + Point::up() * 0.2, tex3, 0.3);
-    Plane plane(Point::down() * 2, tex4, Vector::up());
-    PointLight light(Vector::back() * 2 + Vector::left() * 10 + Vector::up() * 2);
-    Cylinder cyl(Point::forward() * 50 + Point::up() * 1, tex, Vector::up() * 50, 0.3);
+    po::options_description desc("Options: ");
+    desc.add_options()
+            ("help,h", "Display this information")
+            ("demo", "Run demo scene")
+            ("save,s", po::value<std::string>()->implicit_value(""),
+             "Disable real time mode and save rendered scene to a ppm (if no filename specified it uses a datetime format)")
+            ("load,l", po::value<std::string>(), "Load yaml <file>")
+            ("width,w", po::value<unsigned>(&width)->default_value(1920),
+             "Width of the real time display and/or saved image")
+            ("height,g", po::value<unsigned>(&height)->default_value(1080),
+             "Height of the real time display and/or saved image");
 
-    scene
-        .push_solid(sph)
-        .push_solid(sph2)
-        .push_solid(sph3)
-        .push_solid(plane)
-        .push_solid(cyl)
-        .push_light(light);
+    po::variables_map vm;
+    try {
+        po::store(po::parse_command_line(argc, argv, desc), vm);
+        po::notify(vm);
+    } catch (po::error const& e) {
+        std::cerr << "Option error: " << e.what() << std::endl;
+        return 2;
+    }
 
-//    Blob blob({
-//                      ChargedPoint{Point{-1.5, 0, 3}, 1.01},
-//                      ChargedPoint{Point{1.5, 0, 3}, 1.02}
-//              }, Blob::pf_square, {
-//                      Point{-3, -3, 0}, 6
-//              }, 0.5, 0.5);
-//    blob.render(scene, tex);
+    if (vm.count("help")) {
+        std::cout << desc << std::endl;
+        return 1;
+    }
 
-//    Scene::load("objs.yaml").emplace_light<PointLight>(Vector::left() * 100).render_rt(1920, 1080);
-    scene.render_rt(1920, 1080);
+    Scene* scene;
+    if (vm.count("load"))
+        scene = new Scene(Scene::load(vm["load"].as<std::string>()));
+    else if (vm.count("demo"))
+        scene = new Scene(Scene::demo());
+    else {
+        std::cerr
+                << "raytracer: fatal error: at least --demo or --load <file> options should be provided (or --help for more info)"
+                << std::endl;
+        return 3;
+    }
+
+    if (scene->dark()) {
+        scene->emplace_light<PointLight>(Vector::left() * 100 + Vector::up() * 25);
+    }
+
+    if (vm.count("save")) {
+        auto filename = vm["save"].as<std::string>();
+        if (filename.empty())
+            scene->render(width, height).save_now();
+        else
+            scene->render(width, height).save_ppm(vm["save"].as<std::string>());
+    } else
+        scene->render_rt(width, height);
+
     return 0;
 }

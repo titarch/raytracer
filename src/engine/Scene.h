@@ -24,9 +24,10 @@ public:
     Image render(unsigned width, unsigned height);
     void render_rt(unsigned int width, unsigned int height);
     static Scene load(std::string const& path);
+    static Scene demo();
 
     template<typename S, typename ...Args>
-    Scene& emplace_solid(Args&&... args) {
+    Scene& emplace_solid(Args&& ... args) {
         solids_.push_back(std::make_unique<S>(args...));
         return *this;
     }
@@ -38,7 +39,7 @@ public:
     }
 
     template<typename L, typename ...Args>
-    Scene& emplace_light(Args&&... args) {
+    Scene& emplace_light(Args&& ... args) {
         lights_.push_back(std::make_unique<L>(args...));
         return *this;
     }
@@ -48,6 +49,8 @@ public:
         lights_.push_back(std::make_unique<L>(light));
         return *this;
     }
+
+    [[nodiscard]] bool dark() const { return lights_.empty(); }
 
 protected:
     camera_ptr cam_;
