@@ -11,14 +11,14 @@ int main(int argc, char* argv[]) {
 
     po::options_description desc("Options: ");
     desc.add_options()
-            ("help,h", "Display this information")
+            ("help", "Display this information")
             ("demo", "Run demo scene")
             ("save,s", po::value<std::string>()->implicit_value(""),
              "Disable real time mode and save rendered scene to a ppm (if no filename specified it uses a datetime format)")
             ("load,l", po::value<std::string>(), "Load yaml <file>")
             ("width,w", po::value<unsigned>(&width)->default_value(1920),
              "Width of the real time display and/or saved image")
-            ("height,g", po::value<unsigned>(&height)->default_value(1080),
+            ("height,h", po::value<unsigned>(&height)->default_value(1080),
              "Height of the real time display and/or saved image");
 
     po::variables_map vm;
