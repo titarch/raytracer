@@ -37,12 +37,12 @@ $ make
 
 $ ./raytracer --help
 Options: :
-  -h [ --help ]               Display this information
+  --help                      Display this information
   --demo                      Run demo scene
   -s [ --save ] arg           Disable real time mode and save rendered scene to
                               a ppm (if no filename specified it uses a
                               datetime format)
   -l [ --load ] arg           Load yaml <file>
   -w [ --width ] arg (=1920)  Width of the real time display and/or saved image
-  -g [ --height ] arg (=1080) Height of the real time display and/or saved
+  -h [ --height ] arg (=1080) Height of the real time display and/or saved
                               image
