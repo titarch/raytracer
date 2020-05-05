@@ -213,7 +213,8 @@ Scene Scene::load(const std::string& path) {
     texmats texs;
     for (const auto& texture : textures) {
         texmat_ptr tex;
-        if (texture["type"].as<std::string>() == "uni") {
+        auto type = texture["type"].as<std::string>();
+        if (type == "uni") {
             auto r = texture["r"].as<unsigned>();
             auto g = texture["g"].as<unsigned>();
             auto b = texture["b"].as<unsigned>();
@@ -221,7 +222,12 @@ Scene Scene::load(const std::string& path) {
             auto ks = texture["ks"].as<double>();
             auto ns = texture["ns"].as<double>();
             tex = std::make_shared<UniTex>(Color(r, g, b), kd, ks, ns);
+        } else if (type == "trans") {
+            auto refract = texture["refract"].as<double>();
+            tex = std::make_shared<TransTex>(refract);
         }
+        if (!tex)
+            throw std::invalid_argument(std::string("Unrecognized texture type: ") + type);
         texs.push_back(std::move(tex));
     }
 
