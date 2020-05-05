@@ -246,6 +246,10 @@ Scene Scene::load(const std::string& path) {
             auto origin = solid["origin"].as<Vector>();
             auto radius = solid["radius"].as<double>();
             s = std::make_unique<Sphere>(origin, tex, radius);
+        } else if (type == "plane") {
+            auto origin = solid["origin"].as<Vector>();
+            auto normal = solid["normal"].as<Vector>();
+            s = std::make_unique<Plane>(origin, tex, normal);
         } else if (type == "triangle") {
             auto v0 = solid["v0"].as<Point>();
             auto v1 = solid["v1"].as<Point>();
