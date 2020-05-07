@@ -5,105 +5,68 @@
 #ifndef RAYTRACER_VECTOR_H
 #define RAYTRACER_VECTOR_H
 
-
+#include <eigen3/Eigen/Dense>
 #include <cmath>
 #include <ostream>
+#include <utility>
 
 class Vector {
 public:
-    explicit Vector(double x = 0, double y = 0, double z = 0) : x_(x), y_(y), z_(z) {}
+    explicit Vector(double x = 0, double y = 0, double z = 0) : vec_(x, y, z) {}
+
+    explicit Vector(Eigen::Vector3d vec) : vec_(std::move(vec)) {}
 
     [[nodiscard]] double sqrMagnitude() const {
-        return x_ * x_ + y_ * y_ + z_ * z_;
+        return vec_.squaredNorm();
     }
 
     [[nodiscard]] double magnitude() const {
-        return std::sqrt(sqrMagnitude());
+        return vec_.norm();
     }
 
     [[nodiscard]] Vector normalized() const {
-        Vector copy(*this);
-        copy /= magnitude();
-        return copy;
+        return Vector(vec_.normalized());
     }
 
     double& operator[](size_t idx) {
-        switch (idx) {
-            case 0:
-                return x_;
-            case 1:
-                return y_;
-            case 2:
-                return z_;
-            default:
-                throw std::out_of_range("Valid indices for Vector are 0, 1 or 2");
-        }
+        return vec_[idx];
     }
 
     double operator[](size_t idx) const {
-        switch (idx) {
-            case 0:
-                return x_;
-            case 1:
-                return y_;
-            case 2:
-                return z_;
-            default:
-                throw std::out_of_range("Valid indices for Vector are 0, 1 or 2");
-        }
+        return vec_[idx];
     }
 
     Vector& operator+=(Vector const& rhs) {
-        x_ += rhs.x_;
-        y_ += rhs.y_;
-        z_ += rhs.z_;
+        vec_ += rhs.vec_;
         return *this;
     }
 
     Vector operator-() const {
-        return Vector(-x_, -y_, -z_);
+        return Vector(-vec_);
     }
 
     Vector& operator-=(Vector const& rhs) {
-        x_ -= rhs.x_;
-        y_ -= rhs.y_;
-        z_ -= rhs.z_;
+        vec_ -= rhs.vec_;
         return *this;
     }
 
     Vector& operator*=(double k) {
-        x_ *= k;
-        y_ *= k;
-        z_ *= k;
+        vec_ *=  k;
         return *this;
     }
 
     Vector& operator/=(double k) {
-        x_ /= k;
-        y_ /= k;
-        z_ /= k;
-        return *this;
-    }
-
-    Vector& operator%=(double k) {
-        x_ = std::pow(x_, k);
-        y_ = std::pow(y_, k);
-        z_ = std::pow(z_, k);
+        vec_ /= k;
         return *this;
     }
 
     Vector& operator^=(Vector const& rhs) {
-        double x = y_ * rhs.z_ - z_ * rhs.y_;
-        double y = z_ * rhs.x_ - x_ * rhs.z_;
-        double z = x_ * rhs.y_ - y_ * rhs.x_;
-        x_ = x;
-        y_ = y;
-        z_ = z;
+        vec_ = vec_.cross(rhs.vec_);
         return *this;
     }
 
     friend inline double operator*(Vector const& lhs, Vector const& rhs) {
-        return lhs.x_ * rhs.x_ + lhs.y_ * rhs.y_ + lhs.z_ * rhs.z_;
+        return lhs.vec_.dot(rhs.vec_);
     }
 
     friend inline double operator%(Vector const& lhs, Vector const& rhs) {
@@ -111,7 +74,7 @@ public:
     }
 
     friend std::ostream& operator<<(std::ostream& os, Vector const& v) {
-        return os << '(' << v.x_ << ' ' << v.y_ << ' ' << v.z_ << ')';
+        return os << '(' << v.vec_.x() << ' ' << v.vec_.y() << ' ' << v.vec_.z() << ')';
     }
 
     static Vector zero() {
@@ -119,46 +82,46 @@ public:
     }
 
     static Vector one() {
-        return Vector(1.f, 1.f, 1.f);
+        return Vector(1.0, 1.0, 1.0);
     }
 
     static Vector right() {
-        return Vector(1, 0, 0);
+        return Vector(1.0, 0.0, 0.0);
     }
 
     static Vector left() {
-        return Vector(-1, 0, 0);
+        return Vector(-1.0, 0.0, 0.0);
     }
 
     static Vector up() {
-        return Vector(0, 1, 0);
+        return Vector(0.0, 1.0, 0.0);
     }
 
     static Vector down() {
-        return Vector(0, -1, 0);
+        return Vector(0.0, -1.0, 0.0);
     }
 
     static Vector forward() {
-        return Vector(0, 0, 1);
+        return Vector(0.0, 0.0, 1.0);
     }
 
     static Vector back() {
-        return Vector(0, 0, -1);
+        return Vector(0.0, 0.0, -1.0);
     }
 
     [[nodiscard]] double x() const {
-        return x_;
+        return vec_.x();
     }
 
     [[nodiscard]] double y() const {
-        return y_;
+        return vec_.y();
     }
 
     [[nodiscard]] double z() const {
-        return z_;
+        return vec_.z();
     }
 
-    double x_, y_, z_;
+    Eigen::Vector3d vec_;
 };
 
 inline Vector operator+(Vector lhs, Vector const& rhs) {
@@ -190,5 +153,6 @@ inline Vector operator^(Vector lhs, Vector const& rhs) {
     lhs ^= rhs;
     return lhs;
 }
+
 
 #endif //RAYTRACER_VECTOR_H

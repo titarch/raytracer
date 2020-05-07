@@ -16,9 +16,9 @@ namespace YAML {
                 return false;
             }
 
-            rhs.x_ = node[0].as<double>();
-            rhs.y_ = node[1].as<double>();
-            rhs.z_ = node[2].as<double>();
+            rhs.vec_.x() = node[0].as<double>();
+            rhs.vec_.y() = node[1].as<double>();
+            rhs.vec_.z() = node[2].as<double>();
             return true;
         }
     };

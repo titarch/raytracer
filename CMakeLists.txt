@@ -12,6 +12,7 @@ find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(YAML-CPP REQUIRED)
 find_package(Boost COMPONENTS program_options REQUIRED)
+find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 
 include_directories(${Boost_INCLUDE_DIR})
 
