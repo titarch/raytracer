@@ -9,7 +9,7 @@
 #include "Triangle.h"
 
 #include <utility>
-#include "../../engine/Blob.h"
+#include "engine/Blob.h"
 
 class MetaTriangle : public Triangle {
 public:

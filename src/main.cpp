@@ -2,7 +2,7 @@
 #include <boost/program_options.hpp>
 #include "utils/Vector.h"
 #include "engine/Scene.h"
-#include "objects/lights/PointLight.h"
+#include "lights/PointLight.h"
 
 namespace po = boost::program_options;
 

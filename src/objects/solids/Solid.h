@@ -7,10 +7,10 @@
 
 #include <memory>
 #include <vector>
-#include "../textures/TexPixel.h"
-#include "../textures/TexMat.h"
-#include "../../utils/Line.h"
-#include "../textures/TransTex.h"
+#include "textures/TexPixel.h"
+#include "textures/TexMat.h"
+#include "utils/Line.h"
+#include "textures/TransTex.h"
 
 constexpr double EPS = 1e-3;
 constexpr double Inf = std::numeric_limits<double>::infinity();

@@ -5,7 +5,7 @@
 #ifndef RAYTRACER_LIGHT_H
 #define RAYTRACER_LIGHT_H
 
-#include "../../utils/Point.h"
+#include "utils/Point.h"
 #include <memory>
 #include <vector>
 

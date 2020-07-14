@@ -17,4 +17,3 @@ find_package (Eigen3 3.3 REQUIRED NO_MODULE)
 include_directories(${Boost_INCLUDE_DIR})
 
 add_subdirectory(src)
-

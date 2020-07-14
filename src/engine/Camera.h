@@ -6,8 +6,8 @@
 #define RAYTRACER_CAMERA_H
 
 
-#include "../utils/Point.h"
-#include "../utils/Matrix.h"
+#include "utils/Point.h"
+#include "utils/Matrix.h"
 #include <memory>
 
 class Camera {

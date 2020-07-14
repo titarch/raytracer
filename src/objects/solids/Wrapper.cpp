@@ -3,7 +3,7 @@
 //
 
 #include "Wrapper.h"
-#include "../../engine/ray.h"
+#include "engine/ray.h"
 
 double Wrapper::intersects(const Line& line) const {
     Intersection its = ray::cast_ray(solids_, line);

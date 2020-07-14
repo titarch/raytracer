@@ -6,7 +6,7 @@
 #define RAYTRACER_IMAGE_H
 
 #include <string>
-#include "../utils/Color.h"
+#include "utils/Color.h"
 
 class Image {
 public:
