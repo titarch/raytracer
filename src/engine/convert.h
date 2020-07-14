@@ -6,7 +6,7 @@
 #define RAYTRACER_CONVERT_H
 
 #include <yaml-cpp/yaml.h>
-#include "../utils/Vector.h"
+#include "utils/Vector.h"
 
 namespace YAML {
     template<>

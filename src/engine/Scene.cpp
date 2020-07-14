@@ -8,12 +8,12 @@
 #include "convert.h"
 #include <iostream>
 #include "ray.h"
-#include "../objects/solids/Cylinder.h"
-#include "../objects/textures/UniTex.h"
-#include "../objects/solids/Sphere.h"
-#include "../objects/solids/Triangle.h"
-#include "../objects/lights/PointLight.h"
-#include "../objects/solids/Plane.h"
+#include "solids/Cylinder.h"
+#include "textures/UniTex.h"
+#include "solids/Sphere.h"
+#include "solids/Triangle.h"
+#include "lights/PointLight.h"
+#include "solids/Plane.h"
 
 Scene::Scene(camera_ptr cam) : cam_(std::move(cam)), solids_(), lights_() {
     w_ = cam_->width();

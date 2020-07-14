@@ -8,9 +8,9 @@
 #include <vector>
 #include "Camera.h"
 #include "Image.h"
-#include "../objects/solids/Solid.h"
-#include "../objects/lights/Light.h"
-#include "../objects/solids/Intersection.h"
+#include "solids/Solid.h"
+#include "lights/Light.h"
+#include "solids/Intersection.h"
 
 #define REFLECTION_REC_LVL_MAX 3
 

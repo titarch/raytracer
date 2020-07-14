@@ -5,7 +5,6 @@
 #ifndef RAYTRACER_CYLINDER_H
 #define RAYTRACER_CYLINDER_H
 
-
 #include "Solid.h"
 
 class Cylinder : public Solid {

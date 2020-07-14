@@ -7,7 +7,7 @@
 
 
 #include <vector>
-#include "../objects/solids/Intersection.h"
+#include "solids/Intersection.h"
 
 namespace ray {
     struct Compare {

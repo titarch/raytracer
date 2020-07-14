@@ -7,8 +7,8 @@
 
 #include <functional>
 #include "Scene.h"
-#include "../utils/Point.h"
-#include "../objects/textures/TexMat.h"
+#include "utils/Point.h"
+#include "objects/textures/TexMat.h"
 
 struct ChargedPoint {
     Point p;

@@ -2,7 +2,6 @@
 // Created by parsy_b on 3/6/20.
 //
 
-#include <iostream>
 #include "Cylinder.h"
 
 double Cylinder::intersects(const Line& line) const {
