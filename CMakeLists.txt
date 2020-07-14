@@ -18,3 +18,5 @@ include_directories(${Boost_INCLUDE_DIR})
 
 add_subdirectory(src)
 
+target_include_directories(${EXECUTABLE_NAME} PUBLIC src)
+
