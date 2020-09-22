@@ -55,6 +55,13 @@ public:
         return *this;
     }
 
+    Vector& operator/=(Vector const& rhs) {
+        vec_[0] /= rhs.vec_[0];
+        vec_[1] /= rhs.vec_[1];
+        vec_[2] /= rhs.vec_[2];
+        return *this;
+    }
+
     Vector& operator/=(double k) {
         vec_ /= k;
         return *this;
@@ -145,6 +152,11 @@ inline Vector operator*(double lhs, Vector rhs) {
 }
 
 inline Vector operator/(Vector lhs, double rhs) {
+    lhs /= rhs;
+    return lhs;
+}
+
+inline Vector operator/(Vector lhs, Vector const& rhs) {
     lhs /= rhs;
     return lhs;
 }
