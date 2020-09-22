@@ -1,0 +1,9 @@
+[requires]
+sfml/2.5.1@bincrafters/stable
+llvm-openmp/10.0.0
+yaml-cpp/0.6.3
+boost/1.74.0
+eigen/3.3.7
+
+[generators]
+cmake
