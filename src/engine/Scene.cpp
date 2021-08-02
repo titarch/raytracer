@@ -3,7 +3,11 @@
 //
 
 #include "Scene.h"
+
+#ifdef SFML_ENABLED
 #include <SFML/Graphics.hpp>
+#endif
+
 #include <yaml-cpp/yaml.h>
 #include "convert.h"
 #include <iostream>
@@ -99,6 +103,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
     return img;
 }
 
+#ifdef SFML_ENABLED
 void Scene::render_rt(unsigned int width, unsigned int height) {
     sf::RenderWindow window(sf::VideoMode(width, height), "sfml-raytracer");
     auto* pixels = new sf::Uint8[width * height * 4];
@@ -189,6 +194,7 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
 
     delete[] pixels;
 }
+#endif
 
 Scene Scene::load(const std::string& path) {
     static texmat_ptr default_tex = std::make_shared<UniTex>(Color(255, 255, 255), 0.5, 0.5, 5);

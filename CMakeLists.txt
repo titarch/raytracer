@@ -8,7 +8,12 @@ set(EXECUTABLE_NAME raytracer)
 set(CMAKE_CXX_FLAGS_RELEASE  "-O3 -Wall -Wextra -Werror -pedantic -fopenmp")
 set(CMAKE_CXX_FLAGS_DEBUG    "-g -O3 -Wall -Wextra -Werror -pedantic -fopenmp")
 
-find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
+option(SFML_ENABLED "Toggle interactive option using SFML" ON)
+if(SFML_ENABLED)
+    add_definitions(-DSFML_ENABLED)
+    find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
+endif(SFML_ENABLED)
+
 find_package(OpenMP REQUIRED)
 find_package(YAML-CPP REQUIRED)
 find_package(Boost COMPONENTS program_options REQUIRED)

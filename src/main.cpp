@@ -13,8 +13,13 @@ int main(int argc, char* argv[]) {
     desc.add_options()
             ("help", "Display this information")
             ("demo", "Run demo scene")
+#ifdef SFML_ENABLED
             ("save,s", po::value<std::string>()->implicit_value(""),
              "Disable real time mode and save rendered scene to a ppm (if no filename specified it uses a datetime format)")
+#else
+            ("save,s", po::value<std::string>()->default_value(""),
+             "Save scene to a ppm with filename instead of default datetime format")
+#endif
             ("load,l", po::value<std::string>(), "Load yaml <file>")
             ("width,w", po::value<unsigned>(&width)->default_value(1920),
              "Width of the real time display and/or saved image")
@@ -51,14 +56,18 @@ int main(int argc, char* argv[]) {
         scene->emplace_light<PointLight>(Vector::left() * 100 + Vector::up() * 25);
     }
 
+#ifdef SFML_ENABLED
     if (vm.count("save")) {
+#endif
         auto filename = vm["save"].as<std::string>();
         if (filename.empty())
             scene->render(width, height).save_now();
         else
             scene->render(width, height).save_ppm(vm["save"].as<std::string>());
+#ifdef SFML_ENABLED
     } else
         scene->render_rt(width, height);
+#endif
 
     return 0;
 }
