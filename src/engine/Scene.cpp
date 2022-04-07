@@ -3,7 +3,11 @@
 //
 
 #include "Scene.h"
+
+#ifdef SFML_ENABLED
 #include <SFML/Graphics.hpp>
+#endif
+
 #include <yaml-cpp/yaml.h>
 #include "convert.h"
 #include <iostream>
@@ -99,6 +103,7 @@ Image Scene::render(unsigned int width, unsigned int height) {
     return img;
 }
 
+#ifdef SFML_ENABLED
 void Scene::render_rt(unsigned int width, unsigned int height) {
     sf::RenderWindow window(sf::VideoMode(width, height), "sfml-raytracer");
     auto* pixels = new sf::Uint8[width * height * 4];
@@ -189,6 +194,7 @@ void Scene::render_rt(unsigned int width, unsigned int height) {
 
     delete[] pixels;
 }
+#endif
 
 Scene Scene::load(const std::string& path) {
     static texmat_ptr default_tex = std::make_shared<UniTex>(Color(255, 255, 255), 0.5, 0.5, 5);
@@ -280,28 +286,36 @@ Scene Scene::load(const std::string& path) {
 }
 
 Scene Scene::demo() {
-    Camera cam(Point::back() * 7, Vector::forward(), Vector::up(), M_PI / 2, atanf(16.f / 9), 0.05);
+    Camera cam(Point::back() * 9.3 + Point::right() * 0.2 + Point::down() * 0.2, Vector::forward(), Vector::up(),
+               M_PI / 2, atanf(16.f / 9), 0.05);
     Scene scene(std::make_unique<Camera>(cam));
 
-    auto tex = std::make_shared<UniTex>(Color(255, 0, 200), 0.5, 0.5, 5);
-    auto tex2 = std::make_shared<TransTex>(1.3);
-    auto tex3 = std::make_shared<UniTex>(Color(255, 200, 20), 0.5, 0.5, 3);
-    auto tex4 = std::make_shared<UniTex>(Color(0, 32, 255), 1, 0.1, 1);
+    auto transparent = std::make_shared<TransTex>(1.3);
+    auto white = std::make_shared<UniTex>(Color(255, 255, 255), 1, 1, 1);
+    auto black = std::make_shared<UniTex>(Color(0, 0, 0), 1, 0.2, 1);
 
-    Sphere sph(Point::forward() * 50, tex, 1);
-    Sphere sph2(Point::back() * 2, tex2, 0.7);
-    Sphere sph3(Point::left() * 2.2 + Point::back() * 2.3 + Point::up() * 0.2, tex3, 0.3);
-    Plane plane(Point::down() * 2, tex4, Vector::up());
+    auto red = std::make_shared<UniTex>(Color(255, 0, 0), 0.5, 0.5, 5);
+    auto orange = std::make_shared<UniTex>(Color(255, 145, 0), 0.5, 0.5, 5);
+    auto yellow = std::make_shared<UniTex>(Color(255, 200, 20), 0.5, 0.5, 5);
+    auto green = std::make_shared<UniTex>(Color(0, 255, 0), 0.5, 0.5, 5);
+    auto cyan = std::make_shared<UniTex>(Color(0, 255, 255), 0.5, 0.5, 5);
+    auto blue = std::make_shared<UniTex>(Color(0, 32, 255), 0.5, 0.5, 5);
+    auto purple = std::make_shared<UniTex>(Color(145, 0, 255), 0.5, 0.5, 5);
+    const std::array rnbw = {red, orange, yellow, green, cyan, blue, purple};
+
+    Sphere sph(Point::forward() * 50, white, 1);
+    Sphere lens(Point::back() * 2, transparent, 1);
+    Plane plane(Point::down() * 2, black, Vector::up());
     PointLight light(Vector::back() * 2 + Vector::left() * 10 + Vector::up() * 2);
-    Cylinder cyl(Point::forward() * 50 + Point::up() * 1, tex, Vector::up() * 50, 0.3);
 
     scene
-            .push_solid(sph)
-            .push_solid(sph2)
-            .push_solid(sph3)
+            .push_light(light)
             .push_solid(plane)
-            .push_solid(cyl)
-            .push_light(light);
+            .push_solid(sph)
+            .push_solid(lens);
+
+    for (auto i = 0u; i < rnbw.size(); ++i)
+        scene.emplace_solid<Cylinder>(Point::forward() * 50, rnbw[i], Vector::up() * 50 + Vector::left() * 20 * i, 0.3);
 
     return scene;
 }

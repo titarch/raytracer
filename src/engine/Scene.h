@@ -22,7 +22,9 @@ public:
     Vector refract_ray(Intersection const& its, Line const& ray, int rec_lvl);
     Vector get_light_value(Intersection const& its, Line const& ray, int rec_lvl = 0);
     Image render(unsigned width, unsigned height);
+#ifdef SFML_ENABLED
     void render_rt(unsigned int width, unsigned int height);
+#endif
     static Scene load(std::string const& path);
     static Scene demo();
 
